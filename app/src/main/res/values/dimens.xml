@@ -3,16 +3,23 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Font sizes -->
+    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_large">18sp</dimen>
+    <dimen name="font_normal">15sp</dimen>
+    <dimen name="font_larger">22sp</dimen>
+
     <!--Sizes-->
-    <dimes name="size_small_24">24dp</dimes>
-    <dimes name="size_medium_56">56dp</dimes>
-    <dimes name="size_large_72">72dp</dimes>
+    <dimen name="size_small_24">24dp</dimen>
+    <dimen name="size_medium_56">56dp</dimen>
+    <dimen name="size_large_72">72dp</dimen>
 
     <!--Spaces-->
-    <dimes name="spacing_small_8">8dp</dimes>
-    <dimes name="spacing_normal_16">16dp</dimes>
-    <dimes name="spacing_medial_24">24dp</dimes>
-    <dimes name="spacing_medium_32">32dp</dimes>
-    <dimes name="spacing_large_56">56dp</dimes>
-    <dimes name="spacing_larger_72">72dp</dimes>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small_8">8dp</dimen>
+    <dimen name="spacing_normal_16">16dp</dimen>
+    <dimen name="spacing_medial_24">24dp</dimen>
+    <dimen name="spacing_medium_32">32dp</dimen>
+    <dimen name="spacing_large_56">56dp</dimen>
+    <dimen name="spacing_larger_72">72dp</dimen>
 </resources>
