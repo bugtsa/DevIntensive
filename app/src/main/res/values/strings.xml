@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DevIntensive</string>
+    <string name="app_name">Полховцев Владимир</string>
+    <string name="phone">Мобильный</string>
+    <string name="email">Емэйл</string>
 </resources>
