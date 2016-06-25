@@ -17,4 +17,6 @@
     <string name="rating">Рейтинг</string>
     <string name="lines_code">Написано строк кода</string>
     <string name="projects">Проектов</string>
+    <string name="team">Команда</string>
+    <string name="user_profile">Мой профиль</string>
 </resources>

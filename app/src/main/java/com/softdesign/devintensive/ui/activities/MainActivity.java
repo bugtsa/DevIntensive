@@ -1,6 +1,7 @@
 package com.softdesign.devintensive.ui.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import com.softdesign.devintensive.R;
@@ -12,11 +13,16 @@ public class MainActivity extends AppCompatActivity{
 
     protected int mColorMode;
 
+    private CoordinatorLayout mCoordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         LogUtils.d(TAG, "onCreate");
+
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
+
         if (savedInstanceState == null) {
 
         } else {
