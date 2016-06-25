@@ -17,16 +17,17 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            android:background="@color/color_primary">
+            android:background="@color/color_primary"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/AppTheme.PopupOverlay"
-                android:title="@string/my_name"
-                android:titleTextColor="@color/white">
+                android:background="?attr/colorPrimary"
+                android:fitsSystemWindows="true"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:theme="@style/AppTheme.AppBarOverlay">
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
