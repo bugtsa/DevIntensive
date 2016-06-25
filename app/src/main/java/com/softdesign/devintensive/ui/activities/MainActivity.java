@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setTitle(R.string.my_name);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
