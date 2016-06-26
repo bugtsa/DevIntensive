@@ -65,11 +65,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUserInfoViews.add(mUserVK);
         mUserInfoViews.add(mUserGit);
         mUserInfoViews.add(mUserBio);
+        if (!isLoadUserInfoValue()) {
+            initUserInfoValue();
+        }
+        loadUserInfoValue();
 
         mFab.setOnClickListener(this);
         setupToolBar();
         setupDrawer();
-        loadUserInfoValue();
 
         List<String> test = mDataManager.getPreferencesManager().loadUserProfileData();
 
@@ -190,6 +193,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void initUserInfoValue() {
+        List<String> userData = new ArrayList<>();
+        userData.add(getResources().getString(R.string.phone_number_body));
+        userData.add(getResources().getString(R.string.email_address_body));
+        userData.add(getResources().getString(R.string.vk_profile_body));
+        userData.add(getResources().getString(R.string.repo_body));
+        userData.add(getResources().getString(R.string.about_me_body));
+        mDataManager.getPreferencesManager().saveUserProfileData(userData);
+    }
+
+    private boolean isLoadUserInfoValue() {
+        boolean isLoadUserInfo = false;
+        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
+        for (int index = 0; index < userData.size(); index++) {
+           if (!userData.get(index).isEmpty() && !userData.get(index).equals("null")) {
+               isLoadUserInfo = true;
+           }
+        }
+        return isLoadUserInfo;
+    }
+
     private void loadUserInfoValue() {
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         for (int index = 0; index < userData.size(); index++) {
@@ -204,4 +228,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
     }
+
 }
