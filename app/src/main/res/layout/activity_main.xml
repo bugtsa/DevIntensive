@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/navigation_drawer"
+    style="@style/match_double"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/match_double">
+    xmlns:tools="http://schemas.android.com/tools">
     tools:context=".ui.activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
@@ -96,7 +96,6 @@
                             style="@style/text_view.bottom"
                             android:text="@string/projects"/>
                     </LinearLayout>
-
                 </LinearLayout>
 
                 <LinearLayout
