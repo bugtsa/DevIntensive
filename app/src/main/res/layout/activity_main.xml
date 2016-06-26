@@ -6,23 +6,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".ui.activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
             android:background="@color/color_primary"
+            android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
-            
+
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
@@ -34,16 +32,17 @@
                     android:id="@+id/user_image"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/profile_image_height_size"
+                    android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/user_profile"
-                    android:fitsSystemWindows="true"/>
-                
+                    android:src="@drawable/user_profile"/>
+
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:titleTextColor="@color/white"
+                    android:layout_marginTop="@dimen/size_small_24"
                     android:theme="@style/AppTheme.PopupOverlay"
+                    android:titleTextColor="@color/white"
                     app:layout_collapseMode="pin"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -331,16 +330,16 @@
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
-        
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/fab_right_space"
             android:src="@drawable/ic_create_black_24dp"
             app:layout_anchor="@id/appbar_layout"
-            app:layout_anchorGravity="bottom|right"
-            android:layout_marginRight="@dimen/fab_right_space"/>
-        
+            app:layout_anchorGravity="bottom|right"/>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
