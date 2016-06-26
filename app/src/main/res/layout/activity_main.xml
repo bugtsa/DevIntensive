@@ -4,44 +4,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/match_double">
     tools:context=".ui.activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/match_and_wrap">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_primary"
-            android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            style="@style/appbar">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/match_and_wrap"
                 app:contentScrim="@color/color_primary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
                     android:id="@+id/user_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_image_height_size"
-                    android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/user_profile"/>
+                    style="@style/user_image"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginTop="@dimen/size_small_24"
-                    android:theme="@style/AppTheme.PopupOverlay"
+                    style="@style/toolbar"
                     android:titleTextColor="@color/white"
                     app:layout_collapseMode="pin"/>
 
