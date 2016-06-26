@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -12,11 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
+import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.softdesign.devintensive.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FloatingActionButton mFab;
 
+    private ImageView mUserAvatar;
+
     private int mCurrentEditMode = 0;
 
     @Override
@@ -53,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.navigation_drawer);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
+
+        mUserAvatar = (ImageView) findViewById(R.id.user_avatar);
+        mUserAvatar.setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
+
         mUserPhone = (EditText) findViewById(R.id.phone_et);
         mUserEmail = (EditText) findViewById(R.id.email_et);
         mUserVK = (EditText) findViewById(R.id.vk_profile_et);
@@ -94,8 +103,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        mNavigationDrawer.closeDrawer(GravityCompat.START);
-        return;
+        if (mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
+            mNavigationDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
