@@ -2,6 +2,7 @@
 <android.support.v4.widget.DrawerLayout
     android:id="@+id/navigation_drawer"
     style="@style/match_double"
+    android:fitsSystemWindows="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -9,10 +10,12 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator_layout"
+        android:fitsSystemWindows="true"
         style="@style/match_double">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar_layout"
+            android:fitsSystemWindows="true"
             style="@style/appbar">
 
             <android.support.design.widget.CollapsingToolbarLayout
