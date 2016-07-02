@@ -9,7 +9,7 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_coordinator_layout"
-        style="@style/match_and_wrap">
+        style="@style/match_double">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar_layout"
@@ -49,7 +49,7 @@
 
                         <ImageView
                             android:id="@+id/photo_placeholder"
-                            android:layout_width="90dp"
+                            android:layout_width="@dimen/placeholder_photo_size_90"
                             android:layout_height="@dimen/placeholder_photo_size_90"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
