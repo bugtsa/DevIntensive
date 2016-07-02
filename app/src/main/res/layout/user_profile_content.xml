@@ -1,0 +1,282 @@
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="104dp"
+            android:background="#5d5d5d"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                style="@style/sub_linear_layout">
+
+                <TextView
+                    android:id="@+id/rating_title_tv"
+                    style="@style/text_view.top"/>
+
+                <TextView
+                    android:id="@+id/rating_body_tv"
+                    style="@style/text_view.bottom"
+                    android:text="@string/rating"/>
+            </LinearLayout>
+
+            <View
+                style="@style/vertical_divider"></View>
+
+            <LinearLayout
+                style="@style/sub_linear_layout">
+
+                <TextView
+                    android:id="@+id/lines_code_title_tv"
+                    style="@style/text_view.top"/>
+
+                <TextView
+                    android:id="@+id/lines_code_body_tv"
+                    style="@style/text_view.bottom"
+                    android:text="@string/lines_code"/>
+            </LinearLayout>
+
+            <View
+                style="@style/vertical_divider"></View>
+
+            <LinearLayout
+                style="@style/sub_linear_layout">
+
+                <TextView
+                    android:id="@+id/project_title_tv"
+                    style="@style/text_view.top"/>
+
+                <TextView
+                    android:id="@+id/project_body_tv"
+                    style="@style/text_view.bottom"
+                    android:text="@string/projects"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/ic_call_black_24dp"/>
+
+            <LinearLayout
+                style="@style/item">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/phone_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:hint="@string/phone_number_title"
+                        android:inputType="phone"
+                        android:text="@string/phone_number_body"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"
+                android:src="@drawable/ic_phone_in_talk_black_24dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_size"
+            android:layout_marginLeft="@dimen/spacing_larger_72"
+            android:background="@color/grey_light"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/ic_email_black_24dp"/>
+
+            <LinearLayout
+                style="@style/item">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/email_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:hint="@string/email_address_title"
+                        android:inputType="textEmailAddress"
+                        android:text="@string/email_address_body"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"
+                android:src="@drawable/ic_send_black_24dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_size"
+            android:layout_marginLeft="@dimen/spacing_larger_72"
+            android:background="@color/grey_light"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/vk_circle"/>
+
+            <LinearLayout
+                style="@style/item">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/vk_profile_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:hint="@string/vk_profile_title"
+                        android:inputType="textEmailAddress"
+                        android:text="@string/vk_profile_body"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"
+                android:src="@drawable/eye"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_size"
+            android:layout_marginLeft="@dimen/spacing_larger_72"
+            android:background="@color/grey_light"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/github_circle"/>
+
+            <LinearLayout
+                style="@style/item">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/repo_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:hint="@string/repo_title"
+                        android:inputType="textEmailAddress"
+                        android:text="@string/repo_body"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"
+                android:src="@drawable/eye"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_size"
+            android:layout_marginLeft="@dimen/spacing_larger_72"
+            android:background="@color/grey_light"></View>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="horizontal">
+
+            <ImageView
+                style="@style/icon.left"
+                android:src="@drawable/account_circle"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing_medium_32"
+                android:layout_marginRight="@dimen/spacing_normal_16"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/about_me_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:hint="@string/about_me_title"
+                        android:scrollHorizontally="false"
+                        android:singleLine="false"
+                        android:text="@string/about_me_body"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"
+                        android:textSize="@dimen/font_normal"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <ImageView
+                style="@style/icon.right"
+                android:src="@drawable/ic_send_black_24dp"
+                android:visibility="invisible"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -1,7 +1,10 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
@@ -44,6 +48,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView mUserAvatar;
 
+    private RelativeLayout mProfilePlaceHolder;
+
+    private CollapsingToolbarLayout mCollapsingToolbar;
+
+    private AppBarLayout mAppBarLayout;
+
+    private AppBarLayout.LayoutParams mAppBarParams = null;
+
     private int mCurrentEditMode = 0;
 
     @Override
@@ -58,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mNavigationDrawer = (DrawerLayout) findViewById(R.id.navigation_drawer);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mProfilePlaceHolder = (RelativeLayout) findViewById(R.id.profile_placeholder);
+        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
 
         mUserAvatar = (ImageView) findViewById(R.id.user_avatar);
         mUserAvatar.setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
@@ -156,6 +171,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LogUtils.d(TAG, "onDestroy");
     }
 
+    /**
+     * получает результат из другой Activity (фото из камеры или из галлереи)
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -165,7 +191,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setupToolBar() {
         setSupportActionBar(mToolbar);
+
         ActionBar actionBar = getSupportActionBar();
+
+        mAppBarParams = (AppBarLayout.LayoutParams) mCollapsingToolbar.getLayoutParams();
         if (actionBar != null) {
             actionBar.setTitle(R.string.my_name);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
@@ -200,14 +229,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 userValue.setFocusable(true);
                 userValue.setFocusableInTouchMode(true);
             }
+            showProfilePlaceHolder();
+            lockToolbar();
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
             for (EditText userValue : mUserInfoViews) {
                 userValue.setEnabled(false);
                 userValue.setFocusable(false);
                 userValue.setFocusableInTouchMode(false);
+
                 saveUserInfoValue();
             }
+            hideProfilePlaceHolder();
+            unLockToolbar();
         }
     }
 
@@ -247,4 +281,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
     }
 
+    private void loadPhotoFromGallery() {
+
+    }
+
+    private void loadPhotoFromCamera() {
+
+    }
+
+    private void hideProfilePlaceHolder() {
+        mProfilePlaceHolder.setVisibility(View.GONE);
+    }
+
+    private void showProfilePlaceHolder() {
+        mProfilePlaceHolder.setVisibility(View.VISIBLE);
+    }
+
+    private void lockToolbar() {
+        mAppBarLayout.setExpanded(true, true);
+        mAppBarParams.setScrollFlags(0);
+        mCollapsingToolbar.setLayoutParams(mAppBarParams);
+    }
+
+    private void unLockToolbar() {
+        mAppBarParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL| AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+        mCollapsingToolbar.setLayoutParams(mAppBarParams);
+    }
 }
