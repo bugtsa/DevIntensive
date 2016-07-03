@@ -30,7 +30,7 @@
                     android:fitsSystemWindows="true">
 
                     <ImageView
-                        android:id="@+id/user_image"
+                        android:id="@+id/user_profile_iv"
                         style="@style/user_image"/>
 
                     <RelativeLayout
@@ -47,7 +47,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginBottom="@dimen/spacing_small_8"
                             android:fontFamily="sens-serif-medium"
-                            android:text="@string/user_profile_placeholder.image"
+                            android:text="@string/user_profile_placeholder_image_title"
                             android:textColor="@color/white"/>
 
                         <ImageView

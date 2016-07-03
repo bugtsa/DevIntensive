@@ -10,7 +10,7 @@
                 android:paddingTop="@dimen/size_small_24">
 
     <ImageView
-        android:id="@+id/user_avatar"
+        android:id="@+id/user_avatar_iv"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="@dimen/size_mini_small_16"

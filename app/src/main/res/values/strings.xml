@@ -21,5 +21,12 @@
     <string name="team">Команда</string>
     <string name="user_profile">Мой профиль</string>
     <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
-    <string name="user_profile_placeholder.image">Изменить фотографию профиля</string>
+
+    <string name="user_profile_placeholder_image_title">Изменить фотографию профиля</string>
+    <string name="user_profile_dialog_gallery">Загрузить из галереи</string>
+    <string name="user_profile_dialog_camera">Сделать снимок</string>
+    <string name="user_profile_dialog_cancel">Отмена</string>
+    <string name="chose_gallery_photo">Выберите фото</string>
+    <string name="give_permission_message">Для корректной работы приложения необходимо дать требуемые разрешения</string>
+    <string name="allow_message">Разрешить</string>
 </resources>
