@@ -10,6 +10,10 @@ public class DataManager {
         mPreferencesManager = new PreferencesManager();
     }
 
+    /**
+     * Создаёт экземпляр класса
+     * @return singleton класса
+     */
     public static DataManager getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new DataManager();
@@ -17,6 +21,10 @@ public class DataManager {
         return INSTANCE;
     }
 
+    /**
+     * Получает SharedPreferences
+     * @return SharedPreferences
+     */
     public PreferencesManager getPreferencesManager() {
         return mPreferencesManager;
     }

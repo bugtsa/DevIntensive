@@ -95,6 +95,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/call_phone_iv"
                 style="@style/icon.right"
                 android:src="@drawable/ic_phone_in_talk_black_24dp"/>
         </LinearLayout>
@@ -137,6 +138,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/send_email_iv"
                 style="@style/icon.right"
                 android:src="@drawable/ic_send_black_24dp"/>
         </LinearLayout>
@@ -179,6 +181,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/show_vk_iv"
                 style="@style/icon.right"
                 android:src="@drawable/eye"/>
         </LinearLayout>
@@ -221,6 +224,7 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/show_git_iv"
                 style="@style/icon.right"
                 android:src="@drawable/eye"/>
         </LinearLayout>
