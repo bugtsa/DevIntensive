@@ -271,7 +271,7 @@
                         android:text="@string/about_me_body"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
-                        android:textSize="@dimen/font_normal"/>
+                        android:textSize="@dimen/font_normal_15"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 

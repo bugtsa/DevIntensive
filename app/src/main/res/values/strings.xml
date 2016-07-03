@@ -29,5 +29,5 @@
     <string name="chose_gallery_photo">Выберите фото</string>
     <string name="give_permission_message">Для корректной работы приложения необходимо дать требуемые разрешения</string>
     <string name="allow_message">Разрешить</string>
-    <string name="sing_in">Войти</string>
+    <string name="sing_in">ВОЙТИ</string>
 </resources>
