@@ -2,6 +2,7 @@ package com.softdesign.devintensive.ui.activities;
 
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -27,9 +29,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -40,6 +47,7 @@ import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.softdesign.devintensive.utils.ToastUtils;
+import com.softdesign.devintensive.utils.ValidatorUtils;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -49,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.jar.Manifest;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -74,8 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.appbar_layout)
     AppBarLayout mAppBarLayout;
 
-    @BindViews({ R.id.phone_et, R.id.email_et, R.id.vk_profile_et, R.id.repo_et, R.id.about_me_et})
+    @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_profile_et, R.id.repo_et, R.id.about_me_et})
     List<EditText> mUserInfoViews;
+
+    @BindViews({R.id.phone_til, R.id.email_til, R.id.vk_profile_til, R.id.repo_til})
+    List<TextInputLayout> mUserInfoTil;
 
     @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.user_avatar_iv, R.id.user_profile_iv})
     List<ImageView> mUserInfoImages;
@@ -110,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUserInfoImages.get(ConstantManager.USER_VK_INDEX_IMAGE_VIEW).setOnClickListener(this);
         mUserInfoImages.get(ConstantManager.USER_GIT_INDEX_IMAGE_VIEW).setOnClickListener(this);
         mUserInfoImages.get(ConstantManager.USER_AVATAR_INDEX_IMAGE_VIEW).setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
+
+
+        mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT), this, getWindow()));
 
         setupToolBar();
         setupDrawer();
@@ -175,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 callByPhoneNumber(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).getText().toString());
                 break;
             case R.id.send_email_iv:
-                String [] addresses = {mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).getText().toString()};
+                String[] addresses = {mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).getText().toString()};
                 sendEmail(addresses);
                 break;
             case R.id.show_vk_iv:
@@ -244,14 +262,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ConstantManager.REQUEST_GALLERY_PICTURE:
-                if(resultCode == RESULT_OK && data != null) {
+                if (resultCode == RESULT_OK && data != null) {
                     mSelectedImage = data.getData();
 
                     insertProfileImage(mSelectedImage);
                 }
                 break;
             case ConstantManager.REQUEST_CAMERA_PICTURE:
-                if(resultCode ==RESULT_OK && mPhotoFile != null) {
+                if (resultCode == RESULT_OK && mPhotoFile != null) {
                     mSelectedImage = Uri.fromFile(mPhotoFile);
 
                     insertProfileImage(mSelectedImage);
@@ -261,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Сохраняет состояние приложения
+     *
      * @param outState Bundle переменная
      */
     @Override
@@ -320,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
             setFocusForInputAtPhone(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT));
+//            onChangeTextListener(mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT));
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
             for (EditText userValue : mUserInfoViews) {
@@ -337,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Певодит фокус на редактирование
+     *
      * @param field редактируемое поле
      */
     private void setFocusForInputAtPhone(final EditText field) {
@@ -441,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Snackbar.make(mCoordinatorLayout, R.string.give_permission_message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.allow_message, new View.OnClickListener() {
                     @Override
-                    public void onClick(View  v) {
+                    public void onClick(View v) {
                         openApplicationSettings();
                     }
                 }).show();
@@ -449,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Создаёт intent звонка
+     *
      * @param phoneNumber номер телефона собеседника
      */
     private void callByPhoneNumber(String phoneNumber) {
@@ -456,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent dialIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
             startActivity(dialIntent);
         } else {
-            ActivityCompat.requestPermissions(this, new String[] {
+            ActivityCompat.requestPermissions(this, new String[]{
                     android.Manifest.permission.CALL_PHONE
             }, ConstantManager.CALL_PHONE_REQUEST_PERMISSION_CODE);
             showGiveAllowPermissionSnackBar();
@@ -465,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Создаёт intent отправки сообщения
+     *
      * @param addresses e-mail адрес получателя
      */
     public void sendEmail(String[] addresses) {
@@ -483,12 +506,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Проверяет полученные разрешения
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == ConstantManager.CAMERA_REQUEST_PERMISSION_CODE && grantResults.length >= 2) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 int ii = 0;
@@ -536,6 +560,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Создает диалог
+     *
      * @param id идентификатор создаваемого диалога
      * @return диалог
      */
@@ -573,6 +598,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Создает изображение в памяти телефона и помещает его в галерею
+     *
      * @return файл изображения
      * @throws IOException
      */
@@ -594,6 +620,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Добавляет изображение профиля пользователя и сохраняет его в SharedPreferences
+     *
      * @param selectedImage uri выбранного изображения
      */
     private void insertProfileImage(Uri selectedImage) {
@@ -612,5 +639,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(appSettingsIntent, ConstantManager.PERMISSION_REQUEST_SETTINGS_CODE);
     }
 
+    /**
+     * класс слушатель изменений строк в TextWatcher`ах
+     */
+    private class MyTextWatcher implements TextWatcher {
 
+        private View view;
+        boolean skipOnChange = false;
+        private ValidatorUtils validateUtils;
+
+        private MyTextWatcher(View view, Context context, Window window) {
+            this.view = view;
+            validateUtils = new ValidatorUtils(mUserInfoViews, mUserInfoTil, context, window);
+        }
+
+        /**
+         * Отрезает ненужную часть от url строки
+         *
+         * @param url введённая строка
+         * @return
+         */
+        private String cutNoNeedPathAtUrl(String url) {
+            String myUrl = url;
+            return myUrl.replace("http://", "").replace("https://", "").replace("http:// www.", "").replace("www.", "");
+        }
+
+        /**
+         * Проверяет поля на ненужную часть url строки
+         *
+         * @param indexFieldAtUserInfoViews индекс поля
+         */
+        private void checkUrlFieldOnNoNeedPath(int indexFieldAtUserInfoViews) {
+            String originString = mUserInfoViews.get(indexFieldAtUserInfoViews).getText().toString();
+            String cutString = cutNoNeedPathAtUrl(originString);
+            if (originString != cutString) {
+                mUserInfoViews.get(indexFieldAtUserInfoViews).setText(cutString);
+            }
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+        }
+
+        /**
+         * Вызывает код после изменения строки
+         *
+         * @param editable
+         */
+        public void afterTextChanged(Editable editable) {
+            if (skipOnChange)
+                return;
+
+            skipOnChange = true;
+            try {
+                int indexFieldAtUserInfoViews = 0;
+                switch (view.getId()) {
+                    case R.id.phone_et:
+                        indexFieldAtUserInfoViews = ConstantManager.USER_PHONE_INDEX_EDIT_TEXT;
+                        break;
+                    case R.id.email_et:
+                        indexFieldAtUserInfoViews = ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT;
+                        break;
+                    case R.id.vk_profile_et:
+                        indexFieldAtUserInfoViews = ConstantManager.USER_VK_INDEX_EDIT_TEXT;
+                        checkUrlFieldOnNoNeedPath(indexFieldAtUserInfoViews);
+                        break;
+                    case R.id.repo_et:
+                        indexFieldAtUserInfoViews = ConstantManager.USER_GIT_INDEX_EDIT_TEXT;
+                        checkUrlFieldOnNoNeedPath(indexFieldAtUserInfoViews);
+                        break;
+                }
+                validateUtils.isValidate(indexFieldAtUserInfoViews);
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                skipOnChange = false;
+            }
+        }
+    }
 }
