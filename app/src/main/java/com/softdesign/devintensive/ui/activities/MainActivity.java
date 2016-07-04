@@ -27,6 +27,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -49,42 +50,37 @@ import java.util.Date;
 import java.util.List;
 import java.util.jar.Manifest;
 
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+
 import static java.util.jar.Manifest.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = ConstantManager.TAG_PREFIX + MainActivity.class.getSimpleName();
 
-    private CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.navigation_drawer)
+    DrawerLayout mNavigationDrawer;
+    @BindView(R.id.main_coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+    @BindView(R.id.profile_placeholder)
+    RelativeLayout mProfilePlaceHolder;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.appbar_layout)
+    AppBarLayout mAppBarLayout;
+
+    @BindViews({ R.id.phone_et, R.id.email_et, R.id.vk_profile_et, R.id.repo_et, R.id.about_me_et})
+    List<EditText> mUserInfoViews;
+
+    @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.user_avatar_iv, R.id.user_profile_iv})
+    List<ImageView> mUserInfoImages;
 
     private DataManager mDataManager;
-
-    private EditText mUserPhone, mUserEmail, mUserVK, mUserGit, mUserBio;
-
-    private List<EditText> mUserInfoViews;
-
-    private Toolbar mToolbar;
-
-    private DrawerLayout mNavigationDrawer;
-
-    private FloatingActionButton mFab;
-
-    private ImageView mUserAvatarImage;
-
-    private ImageView mUserProfileImage;
-
-    private ImageView mCallPhone;
-
-    private ImageView mSendEmail;
-
-    private ImageView mShowVK;
-
-    private ImageView mShowGit;
-
-    private RelativeLayout mProfilePlaceHolder;
-
-    private CollapsingToolbarLayout mCollapsingToolbar;
-
-    private AppBarLayout mAppBarLayout;
 
     private AppBarLayout.LayoutParams mAppBarParams = null;
 
@@ -101,46 +97,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         LogUtils.d(TAG, "onCreate");
 
         mDataManager = DataManager.getInstance();
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_layout);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mNavigationDrawer = (DrawerLayout) findViewById(R.id.navigation_drawer);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mProfilePlaceHolder = (RelativeLayout) findViewById(R.id.profile_placeholder);
-        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-
-        mUserAvatarImage = (ImageView) findViewById(R.id.user_avatar_iv);
-        mUserProfileImage = (ImageView) findViewById(R.id.user_profile_iv);
-        mCallPhone = (ImageView) findViewById(R.id.call_phone_iv);
-        mSendEmail = (ImageView) findViewById(R.id.send_email_iv);
-        mShowVK = (ImageView) findViewById(R.id.show_vk_iv);
-        mShowGit = (ImageView) findViewById(R.id.show_git_iv);
-
-        mUserAvatarImage.setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
-
-        mUserPhone = (EditText) findViewById(R.id.phone_et);
-        mUserEmail = (EditText) findViewById(R.id.email_et);
-        mUserVK = (EditText) findViewById(R.id.vk_profile_et);
-        mUserGit = (EditText) findViewById(R.id.repo_et);
-        mUserBio = (EditText) findViewById(R.id.about_me_et);
-
-        mUserInfoViews = new ArrayList<>();
-        mUserInfoViews.add(mUserPhone);
-        mUserInfoViews.add(mUserEmail);
-        mUserInfoViews.add(mUserVK);
-        mUserInfoViews.add(mUserGit);
-        mUserInfoViews.add(mUserBio);
-
         mFab.setOnClickListener(this);
         mProfilePlaceHolder.setOnClickListener(this);
-        mCallPhone.setOnClickListener(this);
-        mSendEmail.setOnClickListener(this);
-        mShowVK.setOnClickListener(this);
-        mShowGit.setOnClickListener(this);
+
+        mUserInfoImages.get(ConstantManager.USER_PHONE_INDEX_IMAGE_VIEW).setOnClickListener(this);
+        mUserInfoImages.get(ConstantManager.USER_EMAIL_INDEX_IMAGE_VIEW).setOnClickListener(this);
+        mUserInfoImages.get(ConstantManager.USER_VK_INDEX_IMAGE_VIEW).setOnClickListener(this);
+        mUserInfoImages.get(ConstantManager.USER_GIT_INDEX_IMAGE_VIEW).setOnClickListener(this);
+        mUserInfoImages.get(ConstantManager.USER_AVATAR_INDEX_IMAGE_VIEW).setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
 
         setupToolBar();
         setupDrawer();
@@ -151,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Picasso.with(this)
                 .load(mDataManager.getPreferencesManager().loadUserPhoto())
                 .placeholder(R.drawable.user_profile)
-                .into(mUserProfileImage);
+                .into(mUserInfoImages.get(ConstantManager.USER_PROFILE_INDEX_IMAGE_VIEW));
 
         if (savedInstanceState == null) {
 
@@ -203,17 +172,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showDialog(ConstantManager.LOAD_PROFILE_PHOTO);
                 break;
             case R.id.call_phone_iv:
-                callByPhoneNumber(mUserPhone.getText().toString());
+                callByPhoneNumber(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).getText().toString());
                 break;
             case R.id.send_email_iv:
-                String [] addresses = {mUserEmail.getText().toString()};
+                String [] addresses = {mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).getText().toString()};
                 sendEmail(addresses);
                 break;
             case R.id.show_vk_iv:
-                browseLink(mUserVK.getText().toString());
+                browseLink(mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).getText().toString());
                 break;
             case R.id.show_git_iv:
-                browseLink(mUserGit.getText().toString());
+                browseLink(mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).getText().toString());
                 break;
         }
     }
@@ -350,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showProfilePlaceHolder();
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
+            setFocusForInputAtPhone(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT));
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
             for (EditText userValue : mUserInfoViews) {
@@ -363,6 +333,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             unLockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
         }
+    }
+
+    /**
+     * Певодит фокус на редактирование
+     * @param field редактируемое поле
+     */
+    private void setFocusForInputAtPhone(final EditText field) {
+        field.post(new Runnable() {
+            @Override
+            public void run() {
+                field.requestFocus();
+                field.onKeyUp(KeyEvent.KEYCODE_DPAD_CENTER, new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_CENTER));
+            }
+        });
     }
 
     /**
@@ -615,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void insertProfileImage(Uri selectedImage) {
         Picasso.with(this)
                 .load(selectedImage)
-                .into(mUserProfileImage);
+                .into(mUserInfoImages.get(ConstantManager.USER_PROFILE_INDEX_IMAGE_VIEW));
         mDataManager.getPreferencesManager().saveUserPhoto(selectedImage);
     }
 
