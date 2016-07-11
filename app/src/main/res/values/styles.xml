@@ -33,14 +33,12 @@
 
     <style name="appbar" parent="match_and_wrap">
         <item name="android:background">@color/color_primary</item>
-        <item name="android:fitsSystemWindows">true</item>
         <item name="android:theme">@style/AppTheme.AppBarOverlay</item>
     </style>
 
     <style name="user_image">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/profile_image_height_size</item>
-        <item name="android:fitsSystemWindows">true</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="android:src">@drawable/user_profile</item>
     </style>
@@ -105,7 +103,7 @@
 
     <style name="item">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/size_big_72</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginLeft">@dimen/spacing_medium_32</item>
         <item name="android:layout_marginRight">@dimen/spacing_normal_16</item>

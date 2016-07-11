@@ -34,17 +34,29 @@ public class RoundedAvatarDrawable extends Drawable {
         mBitmapHeight = mBitmap.getHeight();
     }
 
+    /**
+     * Отрисовка Canvas
+     * @param canvas
+     */
     @Override
     public void draw(Canvas canvas) {
         canvas.drawOval(mRectF, mPaint);
     }
 
+    /**
+     * Уставливает прямоугольник отрисовки
+     * @param bounds прямоугольник
+     */
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mRectF.set(bounds);
     }
 
+    /**
+     * Устанавливает alpha канал
+     * @param alpha
+     */
     @Override
     public void setAlpha(int alpha) {
         if (mPaint.getAlpha() != alpha) {
@@ -53,20 +65,37 @@ public class RoundedAvatarDrawable extends Drawable {
         }
     }
 
+    /**
+     * Устанавливает цветовой фильтр
+     * @param cf цветовой фильтр
+     */
     @Override
     public void setColorFilter(ColorFilter cf) {
         mPaint.setColorFilter(cf);
     }
 
+    /**
+     * Получает прозрачность
+     * @return
+     */
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
     }
 
+    /**
+     * Получает Bitmap
+     * @return Bitmap
+     */
     public Bitmap getBitmap() {
         return mBitmap;
     }
 
+    /**
+     * Получает Bitmap со скруглёнными краями
+     * @param bitmap исходный Bitmap
+     * @return скруглённый Bitmap
+     */
     public static Bitmap getRoundedBitmap(Bitmap bitmap) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);
