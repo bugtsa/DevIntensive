@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="ff_regular">sans-serif</string>
+    <string name="ff_medium">sans-serif-medium</string>
+
     <string name="app_name">DevIntensive</string>
     <string name="my_name">Полховцев Владимир</string>
     <string name="phone_number_title">Мобильный</string>
@@ -29,9 +33,10 @@
     <string name="chose_gallery_photo">Выберите фото</string>
     <string name="give_permission_message">Для корректной работы приложения необходимо дать требуемые разрешения</string>
     <string name="allow_message">Разрешить</string>
-    <string name="sing_in">ВОЙТИ</string>
     <string name="err_msg_phone">Неверно! Формат: +x xxx xxx-xx-xx</string>
     <string name="err_msg_email">Неверный e-mail. Формат: xxx@xx.xx</string>
     <string name="err_msg_vk">Неверно! Формат: vk.com/ххх</string>
     <string name="err_msg_git">Неверно! Формат: github.com/ххх</string>
+
+    <string name="sing_in">Войти</string>
 </resources>
