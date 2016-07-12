@@ -32,6 +32,7 @@
 
     <dimen name="fab_right_space">8dp</dimen>
     <dimen name="placeholder_photo_size_90">90dp</dimen>
+    <dimen name="drawer_header_avatar_size">60dp</dimen>
     <dimen name="split_size_height">5dp</dimen>
     <dimen name="spacing_til_item_80">80dp</dimen>
     <dimen name="font_small_14">14dp</dimen>
