@@ -40,12 +40,14 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
+import com.softdesign.devintensive.utils.RoundedImageTransformation;
 import com.softdesign.devintensive.utils.ToastUtils;
 import com.softdesign.devintensive.utils.ValidatorUtils;
 import com.squareup.picasso.Picasso;
@@ -63,13 +65,17 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
-import static java.util.jar.Manifest.*;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = ConstantManager.TAG_PREFIX + MainActivity.class.getSimpleName();
 
+//    private ImageView drawerUsrAvatar;
+//    private TextView drawerUserFullName;
+//    private TextView drawerUserEmail;
+
     @BindView(R.id.navigation_drawer)
     DrawerLayout mNavigationDrawer;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
     @BindView(R.id.main_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.toolbar)
@@ -84,12 +90,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     AppBarLayout mAppBarLayout;
 
     @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_profile_et, R.id.repo_et, R.id.about_me_et})
-    List<EditText> mUserInfoViews;
+    List<EditText> mUserFieldsViews;
+
+    @BindViews({R.id.rating_title_tv, R.id.lines_code_title_tv, R.id.project_title_tv})
+    List<TextView> mUserValueViews;
 
     @BindViews({R.id.phone_til, R.id.email_til, R.id.vk_profile_til, R.id.repo_til})
     List<TextInputLayout> mUserInfoTil;
 
-    @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.user_avatar_iv, R.id.user_profile_iv})
+    @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.drawer_user_avatar_iv, R.id.user_profile_iv})
     List<ImageView> mUserInfoImages;
 
     private DataManager mDataManager;
@@ -124,21 +133,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUserInfoImages.get(ConstantManager.USER_AVATAR_INDEX_IMAGE_VIEW).setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
 
 
-        mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT), this, getWindow()));
-        mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT), this, getWindow()));
-        mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT), this, getWindow()));
-        mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserFieldsViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserFieldsViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT), this, getWindow()));
+        mUserFieldsViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT), this, getWindow()));
 
         setupToolBar();
         setupDrawer();
-        if (!isLoadUserInfoValue()) {
-            initUserInfoValue();
-        }
-        loadUserInfoValue();
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .placeholder(R.drawable.user_profile)
-                .into(mUserInfoImages.get(ConstantManager.USER_PROFILE_INDEX_IMAGE_VIEW));
+//        if (!isLoadUserInfoValue()) {
+//            initUserInfoValue();
+//        }
+//        loadUserInfoValue();
+//        Picasso.with(this)
+//                .load(mDataManager.getPreferencesManager().loadUserPhoto())
+//                .placeholder(R.drawable.user_profile)
+//                .into(mUserInfoImages.get(ConstantManager.USER_PROFILE_INDEX_IMAGE_VIEW));
+
+        initUserFields();
+        initUserInfoValue();
 
         if (savedInstanceState == null) {
 
@@ -190,17 +202,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 showDialog(ConstantManager.LOAD_PROFILE_PHOTO);
                 break;
             case R.id.call_phone_iv:
-                callByPhoneNumber(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).getText().toString());
+                callByPhoneNumber(mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).getText().toString());
                 break;
             case R.id.send_email_iv:
-                String[] addresses = {mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).getText().toString()};
+                String[] addresses = {mUserFieldsViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).getText().toString()};
                 sendEmail(addresses);
                 break;
             case R.id.show_vk_iv:
-                browseLink(mUserInfoViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).getText().toString());
+                browseLink(mUserFieldsViews.get(ConstantManager.USER_VK_INDEX_EDIT_TEXT).getText().toString());
                 break;
             case R.id.show_git_iv:
-                browseLink(mUserInfoViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).getText().toString());
+                browseLink(mUserFieldsViews.get(ConstantManager.USER_GIT_INDEX_EDIT_TEXT).getText().toString());
                 break;
         }
     }
@@ -230,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         LogUtils.d(TAG, "onPause");
-        saveUserInfoValue();
+//        saveUserInfoValue();
+        saveUserFields();
     }
 
     /**
@@ -265,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK && data != null) {
                     mSelectedImage = data.getData();
 
+                    mDataManager.getPreferencesManager().saveUserPhoto(mSelectedImage);
                     insertProfileImage(mSelectedImage);
                 }
                 break;
@@ -272,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK && mPhotoFile != null) {
                     mSelectedImage = Uri.fromFile(mPhotoFile);
 
+                    mDataManager.getPreferencesManager().saveUserPhoto(mSelectedImage);
                     insertProfileImage(mSelectedImage);
                 }
         }
@@ -298,6 +313,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ActionBar actionBar = getSupportActionBar();
 
         mAppBarParams = (AppBarLayout.LayoutParams) mCollapsingToolbar.getLayoutParams();
+
+        mCollapsingToolbar.setTitle(mDataManager.getPreferencesManager().getUserFullName());
+        insertProfileImage(mDataManager.getPreferencesManager().loadUserPhoto());
         if (actionBar != null) {
             actionBar.setTitle(R.string.my_name);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
@@ -309,13 +327,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * инициализирует NavigationDrawer
      */
     private void setupDrawer() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigator_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+//        drawerUsrAvatar = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_avatar_iv);
+//        drawerUserFullName = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_tv);
+//        drawerUserEmail = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_tv);
+
+//        drawerUserFullName.setText(mDataManager.getPreferencesManager().getUserFullName());
+//        drawerUserEmail.setText(mDataManager.getPreferencesManager().getUserEmail());
+
+        insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                ToastUtils.showShortMessage(item.toString(), getApplicationContext());
-                item.setCheckable(true);
+                item.setChecked(true);
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
+
+                if (item.getItemId() == R.id.auth_menu) {
+                    Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
+                    startActivity(authIntent);
+                }
                 return false;
             }
         });
@@ -330,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void changeEditMode(int mode) {
         if (mode == 1) {
             mFab.setImageResource(R.drawable.ic_done_black_24dp);
-            for (EditText userValue : mUserInfoViews) {
+            for (EditText userValue : mUserFieldsViews) {
                 userValue.setEnabled(true);
                 userValue.setFocusable(true);
                 userValue.setFocusableInTouchMode(true);
@@ -338,20 +369,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showProfilePlaceHolder();
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
-            setFocusForInputAtPhone(mUserInfoViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT));
+            setFocusForInputAtPhone(mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT));
 //            onChangeTextListener(mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT));
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
-            for (EditText userValue : mUserInfoViews) {
+            for (EditText userValue : mUserFieldsViews) {
                 userValue.setEnabled(false);
                 userValue.setFocusable(false);
                 userValue.setFocusableInTouchMode(false);
 
-                saveUserInfoValue();
+//                saveUserInfoValue();
             }
             hideProfilePlaceHolder();
             unLockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
+            saveUserFields();
         }
     }
 
@@ -373,49 +405,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Инициализирует данные пользователя из ресурсов приложения
      */
-    private void initUserInfoValue() {
-        List<String> userData = new ArrayList<>();
-        userData.add(getResources().getString(R.string.phone_number_body));
-        userData.add(getResources().getString(R.string.email_address_body));
-        userData.add(getResources().getString(R.string.vk_profile_body));
-        userData.add(getResources().getString(R.string.repo_body));
-        userData.add(getResources().getString(R.string.about_me_body));
-        mDataManager.getPreferencesManager().saveUserProfileData(userData);
-    }
+//    private void initUserInfoValue() {
+//        List<String> userData = new ArrayList<>();
+//        userData.add(getResources().getString(R.string.phone_number_body));
+//        userData.add(getResources().getString(R.string.email_address_body));
+//        userData.add(getResources().getString(R.string.vk_profile_body));
+//        userData.add(getResources().getString(R.string.repo_body));
+//        userData.add(getResources().getString(R.string.about_me_body));
+//        mDataManager.getPreferencesManager().saveUserProfileData(userData);
+//    }
 
     /**
      * Проверяет, загруженны ли данные пользователя из SharedPreferences
      */
-    private boolean isLoadUserInfoValue() {
-        boolean isLoadUserInfo = false;
-        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
-        for (int index = 0; index < userData.size(); index++) {
-            if (!userData.get(index).isEmpty() && !userData.get(index).equals("null")) {
-                isLoadUserInfo = true;
-            }
-        }
-        return isLoadUserInfo;
-    }
+//    private boolean isLoadUserInfoValue() {
+//        boolean isLoadUserInfo = false;
+//        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
+//        for (int index = 0; index < userData.size(); index++) {
+//            if (!userData.get(index).isEmpty() && !userData.get(index).equals("null")) {
+//                isLoadUserInfo = true;
+//            }
+//        }
+//        return isLoadUserInfo;
+//    }
 
     /**
      * Загружает данные пользователя из SharedPreferences
      */
-    private void loadUserInfoValue() {
+//    private void loadUserInfoValue() {
+//        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
+//        for (int index = 0; index < userData.size(); index++) {
+//            mUserInfoViews.get(index).setText(userData.get(index));
+//        }
+//    }
+    private void initUserFields() {
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
-        for (int index = 0; index < userData.size(); index++) {
-            mUserInfoViews.get(index).setText(userData.get(index));
+        for (int i = 0; i < userData.size(); i++) {
+            mUserFieldsViews.get(i).setText(userData.get(i));
         }
     }
 
     /**
      * Сохраняет данные пользователя в SharedPreferences
      */
-    private void saveUserInfoValue() {
+//    private void saveUserInfoValue() {
+//        List<String> userData = new ArrayList<>();
+//        for (EditText userFieldView : mUserInfoViews) {
+//            userData.add(userFieldView.getText().toString());
+//        }
+//        mDataManager.getPreferencesManager().saveUserProfileData(userData);
+//    }
+    private void saveUserFields() {
         List<String> userData = new ArrayList<>();
-        for (EditText userFieldView : mUserInfoViews) {
+        for (EditText userFieldView : mUserFieldsViews) {
             userData.add(userFieldView.getText().toString());
         }
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
+    }
+
+    private void initUserInfoValue() {
+        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileValues();
+        for (int i = 0; i < userData.size(); i++) {
+            mUserValueViews.get(i).setText(userData.get(i));
+        }
     }
 
     /**
@@ -453,6 +505,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }, ConstantManager.CAMERA_REQUEST_PERMISSION_CODE);
             showGiveAllowPermissionSnackBar();
         }
+    }
+
+    private void insertDrawerAvatar(Uri selectedImage) {
+//        Picasso.with(this)
+//                .load(selectedImage)
+//                .resize(getResources().getDimensionPixelSize(R.dimen.drawer_header_avatar_size),
+//                        getResources().getDimensionPixelSize(R.dimen.drawer_header_avatar_size))
+//                .centerCrop()
+//                .transform(new RoundedImageTransformation())
+//                .placeholder(R.drawable.avatar_bg)
+//                .into(drawerUsrAvatar);
     }
 
     /**
@@ -650,7 +713,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         private MyTextWatcher(View view, Context context, Window window) {
             this.view = view;
-            validateUtils = new ValidatorUtils(mUserInfoViews, mUserInfoTil, context, window);
+            validateUtils = new ValidatorUtils(mUserFieldsViews, mUserInfoTil, context, window);
         }
 
         /**
@@ -670,10 +733,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * @param indexFieldAtUserInfoViews индекс поля
          */
         private void checkUrlFieldOnNoNeedPath(int indexFieldAtUserInfoViews) {
-            String originString = mUserInfoViews.get(indexFieldAtUserInfoViews).getText().toString();
+            String originString = mUserFieldsViews.get(indexFieldAtUserInfoViews).getText().toString();
             String cutString = cutNoNeedPathAtUrl(originString);
             if (originString != cutString) {
-                mUserInfoViews.get(indexFieldAtUserInfoViews).setText(cutString);
+                mUserFieldsViews.get(indexFieldAtUserInfoViews).setText(cutString);
             }
         }
 
