@@ -13,16 +13,19 @@ import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.ui.views.AspectRatioImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
     private Context mContext;
     private List<UserListRes.UserData> mUsers;
+    private List<String> mUsersRes;
     private UserViewHolder.CustomClickListener mCustomClickListener;
 
     public UsersAdapter(List<UserListRes.UserData> users, Context context, UserViewHolder.CustomClickListener customClickListener) {
         mUsers = users;
+        mUsersRes = new ArrayList<>();
         mContext = context;
         mCustomClickListener = customClickListener;
     }
@@ -31,6 +34,26 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     public UsersAdapter.UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_list, parent, false);
         return new UserViewHolder(convertView, mCustomClickListener);
+    }
+
+    public void filter(String text) {
+        if(text.isEmpty()){
+//            mUsersRes.clear();
+//            mUsersRes.addAll();
+        } else{
+            List<String> result = new ArrayList<>();
+            text = text.toLowerCase();
+            for(UserListRes.UserData item: mUsers){
+                if(item.getFullName().toLowerCase().contains(text)){
+                    result.add(item.getFullName());
+                }
+            }
+            if (mUsersRes != null || !mUsersRes.isEmpty()) {
+                mUsersRes.clear();
+            }
+            mUsersRes.addAll(result);
+        }
+        notifyDataSetChanged();
     }
 
     /**
