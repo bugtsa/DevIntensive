@@ -217,16 +217,12 @@ public class UserModelRes {
             return linesCode;
         }
 
-        public int getRaiting() {
+        public int getRating() {
             return rait;
         }
 
         public int getHomeTask() {
             return homeTask;
-        }
-
-        public int getRait() {
-            return rait;
         }
 
         public String getUpdated() {

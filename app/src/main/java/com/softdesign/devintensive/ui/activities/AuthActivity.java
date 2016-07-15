@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthActivity extends BaseActivity{
+public class AuthActivity extends BaseActivity {
     private static final String TAG = ConstantManager.TAG_PREFIX + "AuthActivity";
 
     private DataManager mDataManager;
@@ -63,27 +63,28 @@ public class AuthActivity extends BaseActivity{
 
     @OnClick(R.id.login_btn)
     protected void signIn() {
-            if (NetworkStatusChecker.isNetworkAvailable(this)) {
-                Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mAuthLogin.getText().toString(), mAuthPass.getText().toString()));
-                call.enqueue(new Callback<UserModelRes>() {
-                    @Override
-                    public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
-                        if (response.code() == 200) {
-                            loginSuccess(response.body());
-                        } else if (response.code() == 404) {
-                            showSnackBar(getString(R.string.login_password_not_match_response));
-                        } else {
-                            showSnackBar(getString(R.string.not_known_response));
-                        }
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mAuthLogin.getText().toString(), mAuthPass.getText().toString()));
+            call.enqueue(new Callback<UserModelRes>() {
+                @Override
+                public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
+                    if (response.code() == 200) {
+                        loginSuccess(response.body());
+                    } else if (response.code() == 404) {
+                        showSnackBar(getString(R.string.login_password_not_match_response));
+                    } else {
+                        showSnackBar(getString(R.string.not_known_response));
                     }
-                    @Override
-                    public void onFailure(Call<UserModelRes> call, Throwable t) {
-                        showSnackBar(getString(R.string.error_response) + t.getMessage());
-                    }
-                });
-            } else {
-                showSnackBar(getString(R.string.network_not_access_response));
-            }
+                }
+
+                @Override
+                public void onFailure(Call<UserModelRes> call, Throwable t) {
+                    showSnackBar(getString(R.string.error_response) + t.getMessage());
+                }
+            });
+        } else {
+            showSnackBar(getString(R.string.network_not_access_response));
+        }
     }
 
     protected void loginSuccess(UserModelRes userModel) {
@@ -102,7 +103,7 @@ public class AuthActivity extends BaseActivity{
 
     private void saveUserValues(UserModelRes userModel) {
         int[] userValues = {
-                userModel.getData().getUser().getProfileValues().getRaiting(),
+                userModel.getData().getUser().getProfileValues().getRating(),
                 userModel.getData().getUser().getProfileValues().getLinesCode(),
                 userModel.getData().getUser().getProfileValues().getProjects()
         };

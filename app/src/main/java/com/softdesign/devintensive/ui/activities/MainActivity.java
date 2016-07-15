@@ -563,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void browseLink(String link) {
-        Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + link));
+        Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantManager.PREFIX_URL_LINK + link));
         startActivity(browseIntent);
     }
 

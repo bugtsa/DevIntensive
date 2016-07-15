@@ -40,6 +40,8 @@ public interface ConstantManager {
     String USER_ID_KEY = "USER_ID_KEY";
     String USER_FULL_NAME_KEY = "USER_FULL_NAME_KEY";
     String EDIT_MAIL_KEY = "EDIT_MAIL_KEY";
+    String PARCELABLE_KEY = "PARCELABLE_KEY";
 
     String FORGOT_PASSWORD = "http://devintensive.softdesign-apps.ru/forgotpass";
+    String PREFIX_URL_LINK = "http://";
 }
