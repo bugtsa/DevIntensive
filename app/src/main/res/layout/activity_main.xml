@@ -26,7 +26,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_image_height_size"
+                    android:layout_height="@dimen/profile_image_height_256"
                     android:fitsSystemWindows="true">
 
                     <ImageView
@@ -52,8 +52,8 @@
 
                         <ImageView
                             android:id="@+id/photo_placeholder"
-                            android:layout_width="@dimen/placeholder_photo_size_90"
-                            android:layout_height="@dimen/placeholder_photo_size_90"
+                            android:layout_width="@dimen/placeholder_photo_90"
+                            android:layout_height="@dimen/placeholder_photo_90"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"

@@ -38,7 +38,7 @@
 
     <style name="user_image">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/profile_image_height_size</item>
+        <item name="android:layout_height">@dimen/profile_image_height_256</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="android:src">@drawable/user_profile</item>
     </style>
@@ -90,11 +90,11 @@
 
     <style name="text_view.bottom" parent="text_view">
         <item name="android:layout_marginBottom">@dimen/spacing_medial_24</item>
-        <item name="android:textSize">@dimen/size_mini_small_16</item>
+        <item name="android:textSize">@dimen/spacing_normal_16</item>
     </style>
 
     <style name="vertical_divider">
-        <item name="android:layout_width">@dimen/line_size</item>
+        <item name="android:layout_width">@dimen/line_size_1</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">@dimen/size_small_24</item>
         <item name="android:layout_marginBottom">@dimen/size_small_24</item>
@@ -118,6 +118,14 @@
 
     <style name="custom_dialog">
         <item name="android:fullDark">@android:color/transparent</item>
+    </style>
+
+    <!-- ToolBar -->
+
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
 </resources>

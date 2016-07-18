@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_larger_72">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/repo_til"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing_larger_72"
+        android:layout_centerVertical="true">
+
+        <EditText
+            android:id="@+id/item_repo_list_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:focusable="false"
+            android:hint="@string/repo_title"
+            android:inputType="textEmailAddress"
+            android:text="@string/repo_body"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/show_git_iv"
+        style="@style/icon.right"
+        android:src="@drawable/eye"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>
