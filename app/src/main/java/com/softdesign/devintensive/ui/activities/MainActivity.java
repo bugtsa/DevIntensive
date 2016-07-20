@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,13 +29,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,8 +44,6 @@ import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
-import com.softdesign.devintensive.utils.RoundedImageTransformation;
-import com.softdesign.devintensive.utils.ToastUtils;
 import com.softdesign.devintensive.utils.ValidatorUtils;
 import com.squareup.picasso.Picasso;
 
@@ -58,19 +53,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.jar.Manifest;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MainActivity extends BaseActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = ConstantManager.TAG_PREFIX + MainActivity.class.getSimpleName();
 
-//    private ImageView drawerUsrAvatar;
-//    private TextView drawerUserFullName;
-//    private TextView drawerUserEmail;
+    private ImageView drawerUserAvatar;
+    private TextView drawerUserFullName;
+    private TextView drawerUserEmail;
 
     @BindView(R.id.navigation_drawer)
     DrawerLayout mNavigationDrawer;
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindViews({R.id.phone_til, R.id.email_til, R.id.vk_profile_til, R.id.repo_til})
     List<TextInputLayout> mUserInfoTil;
 
-    @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.drawer_user_avatar_iv, R.id.user_profile_iv})
+    @BindViews({R.id.call_phone_iv, R.id.send_email_iv, R.id.show_vk_iv, R.id.show_git_iv, R.id.user_profile_iv})
     List<ImageView> mUserInfoImages;
 
     private DataManager mDataManager;
@@ -130,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUserInfoImages.get(ConstantManager.USER_EMAIL_INDEX_IMAGE_VIEW).setOnClickListener(this);
         mUserInfoImages.get(ConstantManager.USER_VK_INDEX_IMAGE_VIEW).setOnClickListener(this);
         mUserInfoImages.get(ConstantManager.USER_GIT_INDEX_IMAGE_VIEW).setOnClickListener(this);
-        mUserInfoImages.get(ConstantManager.USER_AVATAR_INDEX_IMAGE_VIEW).setImageBitmap(RoundedAvatarDrawable.getRoundedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_avatar)));
-
 
         mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT), this, getWindow()));
         mUserFieldsViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT).addTextChangedListener(new MyTextWatcher(mUserFieldsViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT), this, getWindow()));
@@ -140,14 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setupToolBar();
         setupDrawer();
-//        if (!isLoadUserInfoValue()) {
-//            initUserInfoValue();
-//        }
-//        loadUserInfoValue();
-//        Picasso.with(this)
-//                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-//                .placeholder(R.drawable.user_profile)
-//                .into(mUserInfoImages.get(ConstantManager.USER_PROFILE_INDEX_IMAGE_VIEW));
 
         initUserFields();
         initUserInfoValue();
@@ -242,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         LogUtils.d(TAG, "onPause");
-//        saveUserInfoValue();
         saveUserFields();
     }
 
@@ -327,13 +309,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * инициализирует NavigationDrawer
      */
     private void setupDrawer() {
+        View headerLayout = mNavigationView.getHeaderView(0);
 
-//        drawerUsrAvatar = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_avatar_iv);
-//        drawerUserFullName = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_name_tv);
-//        drawerUserEmail = (TextView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_email_tv);
+        drawerUserAvatar = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_avatar_iv);
 
-//        drawerUserFullName.setText(mDataManager.getPreferencesManager().getUserFullName());
-//        drawerUserEmail.setText(mDataManager.getPreferencesManager().getUserEmail());
+        drawerUserFullName = (TextView) headerLayout.findViewById(R.id.drawer_user_name_tv);
+        drawerUserEmail = (TextView) headerLayout.findViewById(R.id.drawer_user_email_tv);
+
+        drawerUserFullName.setText(mDataManager.getPreferencesManager().getUserFullName());
+        drawerUserEmail.setText(mDataManager.getPreferencesManager().getUserEmail());
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
@@ -343,10 +327,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item.setChecked(true);
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
 
-                if (item.getItemId() == R.id.auth_menu) {
-                    Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
-                    startActivity(authIntent);
+                switch (item.getItemId()) {
+                    case R.id.user_profile_menu:
+                        break;
+                    case R.id.team_menu:
+                        showSplash();
+                        Intent teamIntent = new Intent(MainActivity.this, UserListActivity.class);
+                        startActivity(teamIntent);
+                        break;
+                    case R.id.auth_menu:
+                        showSplash();
+                        Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
+                        startActivity(authIntent);
+                        break;
                 }
+
                 return false;
             }
         });
@@ -370,15 +365,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
             setFocusForInputAtPhone(mUserFieldsViews.get(ConstantManager.USER_PHONE_INDEX_EDIT_TEXT));
-//            onChangeTextListener(mUserInfoViews.get(ConstantManager.USER_EMAIL_INDEX_EDIT_TEXT));
         } else {
             mFab.setImageResource(R.drawable.ic_create_black_24dp);
             for (EditText userValue : mUserFieldsViews) {
                 userValue.setEnabled(false);
                 userValue.setFocusable(false);
                 userValue.setFocusableInTouchMode(false);
-
-//                saveUserInfoValue();
             }
             hideProfilePlaceHolder();
             unLockToolbar();
@@ -403,41 +395,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Инициализирует данные пользователя из ресурсов приложения
-     */
-//    private void initUserInfoValue() {
-//        List<String> userData = new ArrayList<>();
-//        userData.add(getResources().getString(R.string.phone_number_body));
-//        userData.add(getResources().getString(R.string.email_address_body));
-//        userData.add(getResources().getString(R.string.vk_profile_body));
-//        userData.add(getResources().getString(R.string.repo_body));
-//        userData.add(getResources().getString(R.string.about_me_body));
-//        mDataManager.getPreferencesManager().saveUserProfileData(userData);
-//    }
-
-    /**
-     * Проверяет, загруженны ли данные пользователя из SharedPreferences
-     */
-//    private boolean isLoadUserInfoValue() {
-//        boolean isLoadUserInfo = false;
-//        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
-//        for (int index = 0; index < userData.size(); index++) {
-//            if (!userData.get(index).isEmpty() && !userData.get(index).equals("null")) {
-//                isLoadUserInfo = true;
-//            }
-//        }
-//        return isLoadUserInfo;
-//    }
-
-    /**
      * Загружает данные пользователя из SharedPreferences
      */
-//    private void loadUserInfoValue() {
-//        List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
-//        for (int index = 0; index < userData.size(); index++) {
-//            mUserInfoViews.get(index).setText(userData.get(index));
-//        }
-//    }
     private void initUserFields() {
         List<String> userData = mDataManager.getPreferencesManager().loadUserProfileData();
         for (int i = 0; i < userData.size(); i++) {
@@ -448,13 +407,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Сохраняет данные пользователя в SharedPreferences
      */
-//    private void saveUserInfoValue() {
-//        List<String> userData = new ArrayList<>();
-//        for (EditText userFieldView : mUserInfoViews) {
-//            userData.add(userFieldView.getText().toString());
-//        }
-//        mDataManager.getPreferencesManager().saveUserProfileData(userData);
-//    }
     private void saveUserFields() {
         List<String> userData = new ArrayList<>();
         for (EditText userFieldView : mUserFieldsViews) {
@@ -508,14 +460,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void insertDrawerAvatar(Uri selectedImage) {
-//        Picasso.with(this)
-//                .load(selectedImage)
-//                .resize(getResources().getDimensionPixelSize(R.dimen.drawer_header_avatar_size),
-//                        getResources().getDimensionPixelSize(R.dimen.drawer_header_avatar_size))
-//                .centerCrop()
-//                .transform(new RoundedImageTransformation())
-//                .placeholder(R.drawable.avatar_bg)
-//                .into(drawerUsrAvatar);
+        Picasso.with(this)
+                .load(selectedImage)
+                .fit()
+                .centerCrop()
+                .transform(new RoundedAvatarDrawable())
+                .placeholder(R.drawable.avatar_bg)
+                .into(drawerUserAvatar);
     }
 
     /**

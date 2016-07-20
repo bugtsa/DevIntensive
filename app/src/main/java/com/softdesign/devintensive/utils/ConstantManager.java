@@ -22,8 +22,7 @@ public interface ConstantManager {
     int USER_EMAIL_INDEX_IMAGE_VIEW = 1;
     int USER_VK_INDEX_IMAGE_VIEW = 2;
     int USER_GIT_INDEX_IMAGE_VIEW = 3;
-    int USER_AVATAR_INDEX_IMAGE_VIEW = 4;
-    int USER_PROFILE_INDEX_IMAGE_VIEW = 5;
+    int USER_PROFILE_INDEX_IMAGE_VIEW = 4;
 
     int LOAD_PROFILE_PHOTO = 1;
     int REQUEST_CAMERA_PICTURE = 77;
@@ -39,9 +38,19 @@ public interface ConstantManager {
     String AUTH_TOKEN_KEY = "AUTH_TOKEN_KEY";
     String USER_ID_KEY = "USER_ID_KEY";
     String USER_FULL_NAME_KEY = "USER_FULL_NAME_KEY";
-    String EDIT_MAIL_KEY = "EDIT_MAIL_KEY";
     String PARCELABLE_KEY = "PARCELABLE_KEY";
 
     String FORGOT_PASSWORD = "http://devintensive.softdesign-apps.ru/forgotpass";
     String PREFIX_URL_LINK = "http://";
+    int SEARCH_DELAY = 1500;
+    int SEARCH_WITHOUT_DELAY = 0;
+
+    int RESPONSE_OK = 200;
+    int USER_NOT_AUTHORIZED = 401;
+    int LOGIN_OR_PASSWORD_INCORRECT = 404;
+    int RESPONSE_NOT_OK = 666;
+    int SERVER_ERROR = 677;
+    int USER_LIST_LOADED_AND_SAVED = 688;
+    int NETWORK_NOT_AVAILABLE = 699;
+    int END_SHOW_USERS = 711;
 }
