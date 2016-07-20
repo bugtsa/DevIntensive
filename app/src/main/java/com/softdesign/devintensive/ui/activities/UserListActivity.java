@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,36 +87,51 @@ public class UserListActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mHandler = new Handler();
-
+        setAllowSwipeUser();
         setupToolbar();
         setupDrawer();
         loadUsersListFromDb();
     }
 
+    /**
+     * Обрабатывает событие onResume жизненного цикла Activity
+     */
     @Override
     protected void onResume() {
         super.onResume();
         mConnector.onResume();
     }
 
+    /**
+     * Обрабатывает событие onPause жизненного цикла Activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
         mConnector.onPause();
     }
 
+    /**
+     * Обрабатывает событие onStart жизненного цикла Activity
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /**
+     * Обрабатывает событие onStop жизненного цикла Activity
+     */
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
+    /**
+     * Обрабатывает событие onDestroy жизненного цикла Activity
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -137,7 +153,7 @@ public class UserListActivity extends BaseActivity {
     }
 
     /**
-     * Загружает данные о пользователях
+     * Загружает данные о пользователях из БД
      */
     private void loadUsersListFromDb() {
         try {
@@ -147,6 +163,11 @@ public class UserListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Загружает пользователей по имени из БД
+     *
+     * @param queryFullName
+     */
     private void loadUsersByNameFromDb(final String queryFullName) {
         try {
             mConnector.runOperation(new LoadUserByNameOperation(queryFullName), false);
@@ -159,6 +180,11 @@ public class UserListActivity extends BaseActivity {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Устанавливает аватар пользователя со скруглёнными краями в Navigation Drawer
+     *
+     * @param selectedImage
+     */
     private void insertDrawerAvatar(Uri selectedImage) {
         Picasso.with(this)
                 .load(selectedImage)
@@ -194,7 +220,7 @@ public class UserListActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.user_profile_menu:
                         showSplash();
-                        Intent userProfileIntent = new Intent(UserListActivity.this, MainActivity.class);
+                        Intent userProfileIntent = new Intent(UserListActivity.this, LoginUserActivity.class);
                         startActivity(userProfileIntent);
                         break;
                     case R.id.team_menu:
@@ -226,12 +252,18 @@ public class UserListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Устанавливает обработку поиска по имени пользователя в списке
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
         mSearchItem = menu.findItem(R.id.search_action);
         android.widget.SearchView searchView = (android.widget.SearchView) MenuItemCompat.getActionView(mSearchItem);
-        searchView.setQueryHint("Введите имя пользователя");
+        searchView.setQueryHint(getString(R.string.search_input_name_user));
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -247,16 +279,27 @@ public class UserListActivity extends BaseActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * Обрабатывает результат операции LoadUsersListOperation
+     * @param result результат операции
+     */
     public void onOperationFinished(final LoadUsersListOperation.Result result) {
         mUsers = result.getOutput();
         showUsers();
     }
 
+    /**
+     * Обрабатывает результат операции LoadUserByNameOperation
+     * @param result результат операции
+     */
     public void onOperationFinished(final LoadUserByNameOperation.Result result) {
         mUsers = result.getOutput();
         showUsers();
     }
 
+    /**
+     * Отображет список пользователей
+     */
     private void showUsers() {
         if (mUsers.size() == 0) {
             showSnackBar(getString(R.string.error_load_users_list));
@@ -276,6 +319,10 @@ public class UserListActivity extends BaseActivity {
         EventBus.getDefault().post(new TimeEvent(ConstantManager.END_SHOW_USERS));
     }
 
+    /**
+     * Отображает список пользователей при поиске по имени
+     * @param query строка поиска
+     */
     private void showUserByQuery(final String query) {
         Runnable searchUsers = new Runnable() {
             @Override
@@ -296,6 +343,10 @@ public class UserListActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Слушает событие TimeEvent
+     * @param timeEvent слушает окончание отображение списка пользователей
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeEvent(TimeEvent timeEvent) {
         switch(timeEvent.getTimeCode()) {
@@ -304,5 +355,33 @@ public class UserListActivity extends BaseActivity {
                 hideSplash();
                 break;
         }
+    }
+
+    /**
+     * Разрешает осуществлять swipe элементов списка пользователей
+     */
+    private void setAllowSwipeUser() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                final int startPosition = viewHolder.getAdapterPosition();
+                final int targetPosition = target.getAdapterPosition();
+
+                mUsers.add(targetPosition, mUsers.remove(startPosition));
+                mUsersAdapter.notifyItemMoved(startPosition, targetPosition);
+
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                mUsers.remove(position);
+                mUsersAdapter.notifyDataSetChanged();
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
     }
 }

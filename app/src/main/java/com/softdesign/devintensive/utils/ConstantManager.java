@@ -53,4 +53,6 @@ public interface ConstantManager {
     int USER_LIST_LOADED_AND_SAVED = 688;
     int NETWORK_NOT_AVAILABLE = 699;
     int END_SHOW_USERS = 711;
+    int EDITABLE_ERROR = 722;
+    int USER_LIST_NOT_SAVED = 733;
 }

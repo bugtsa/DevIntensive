@@ -58,6 +58,9 @@ public class ProfileUserActivity extends AppCompatActivity {
         initProfileData();
     }
 
+    /**
+     * Устанавливает ToolBar
+     */
     private void setupToolBar() {
         setSupportActionBar(mToolBar);
         ActionBar actionBar = getSupportActionBar();
@@ -67,11 +70,18 @@ public class ProfileUserActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Открывает ссылку
+     * @param link ссылка на веб-адрес
+     */
     public void browseLink(String link) {
         Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantManager.PREFIX_URL_LINK + link));
         startActivity(browseIntent);
     }
 
+    /**
+     * Инициализирует данные пользователя
+     */
     private void initProfileData() {
         UserDTO userDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
 

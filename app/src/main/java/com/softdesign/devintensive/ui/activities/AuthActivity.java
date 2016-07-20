@@ -97,40 +97,56 @@ public class AuthActivity extends BaseActivity {
     }
 
     public void onOperationFinished(final SaveUsersListOperation.Result result) {
-        Intent loginIntent = new Intent(AuthActivity.this, MainActivity.class);
+        Intent loginIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
         startActivity(loginIntent);
     }
 
+    /**
+     * Слушает событие ErrorEvent
+     *
+     * @param errorEvent событие ошибки
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onErrorEvent(ErrorEvent event) {
+    public void onErrorEvent(ErrorEvent errorEvent) {
         hideSplash();
         hideProgress();
 
-        switch (event.getErrorCode()) {
+        switch (errorEvent.getErrorCode()) {
             case ConstantManager.NETWORK_NOT_AVAILABLE:
-                startUserMainActivity();
+                startLoginUserActivity();
                 break;
             case ConstantManager.USER_LIST_LOADED_AND_SAVED:
-                startUserMainActivity();
+                startLoginUserActivity();
                 break;
             case ConstantManager.USER_NOT_AUTHORIZED:
-                showSnackBar("Необходима авторизация");
+                showSnackBar(getString(R.string.request_auth));
                 break;
             case ConstantManager.LOGIN_OR_PASSWORD_INCORRECT:
-                showSnackBar("Неверный логин или пароль");
+                showSnackBar(getString(R.string.login_pass_not_match));
                 break;
             case ConstantManager.RESPONSE_NOT_OK:
-                startUserMainActivity();
+                startLoginUserActivity();
                 break;
             case ConstantManager.SERVER_ERROR:
-                startUserMainActivity();
+                startLoginUserActivity();
+                break;
+            case ConstantManager.EDITABLE_ERROR:
+                showSnackBar(getString(R.string.editable_error));
+                break;
+            case ConstantManager.USER_LIST_NOT_SAVED:
+                showSnackBar(getString(R.string.users_list_not_saved));
                 break;
         }
     }
 
+    /**
+     * Слушает событие TimeEvent
+     *
+     * @param timeEvent слушает окончание отображение списка пользователей
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeEvent(TimeEvent timeEvent) {
-        switch(timeEvent.getTimeCode()) {
+        switch (timeEvent.getTimeCode()) {
 
             case ConstantManager.END_SHOW_USERS:
                 hideSplash();
@@ -138,22 +154,31 @@ public class AuthActivity extends BaseActivity {
         }
     }
 
-    private void startUserMainActivity() {
-        Intent loginIntent = new Intent(AuthActivity.this, MainActivity.class);
+    /**
+     * Запускает LoginUserActivity
+     */
+    private void startLoginUserActivity() {
+        Intent loginUserIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
         finish();
-        startActivity(loginIntent);
+        startActivity(loginUserIntent);
     }
 
     private void showSnackBar(String message) {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * Слушает собитие кликов кнопки восстановление пароля пользователя
+     */
     @OnClick(R.id.remember_tv)
     protected void rememberPass() {
         Intent rememberIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantManager.FORGOT_PASSWORD));
         startActivity(rememberIntent);
     }
 
+    /**
+     * Слушает событие кликов кнопки авторизации пользователя
+     */
     @OnClick(R.id.login_btn)
     protected void signIn() {
         showSplash();
@@ -164,13 +189,14 @@ public class AuthActivity extends BaseActivity {
                 public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
                         loginSuccess(response.body());
-                    } else if(response.code() == ConstantManager.LOGIN_OR_PASSWORD_INCORRECT ||
-                            response.code() == ConstantManager.USER_NOT_AUTHORIZED){
+                    } else if (response.code() == ConstantManager.LOGIN_OR_PASSWORD_INCORRECT ||
+                            response.code() == ConstantManager.USER_NOT_AUTHORIZED) {
                         EventBus.getDefault().post(new ErrorEvent(response.code()));
                     } else {
                         EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
                     }
                 }
+
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
                     showSnackBar(getString(R.string.error_response) + t.getMessage());
@@ -183,6 +209,11 @@ public class AuthActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Обрабатывает успешную авторизацию пользователя
+     *
+     * @param userModel
+     */
     protected void loginSuccess(UserModelRes userModel) {
         mDataManager.getPreferencesManager().saveAuthToken(userModel.getData().getToken());
         mDataManager.getPreferencesManager().saveUserId(userModel.getData().getUser().getId());
@@ -191,9 +222,14 @@ public class AuthActivity extends BaseActivity {
         mDataManager.getPreferencesManager().saveUserFullName(userModel.getData().getUser().getFirstName() + " " + userModel.getData().getUser().getSecondName());
         saveUserValues(userModel);
         saveUserData(userModel);
-        saveUserInDb();
+        saveUsersListInDb();
     }
 
+    /**
+     * Сохраняет данные о разработанных проектах пользователя в Shared Preferences
+     *
+     * @param userModel пользовательская модель
+     */
     private void saveUserValues(UserModelRes userModel) {
         int[] userValues = {
                 userModel.getData().getUser().getProfileValues().getRating(),
@@ -204,6 +240,11 @@ public class AuthActivity extends BaseActivity {
         mDataManager.getPreferencesManager().saveUserProfileValues(userValues);
     }
 
+    /**
+     * Сохраняет пользовательские данные в Shared Preferences
+     *
+     * @param userModel пользовательская модель
+     */
     private void saveUserData(UserModelRes userModel) {
         List<String> userData = new ArrayList<>();
         userData.add(userModel.getData().getUser().getContacts().getPhone());
@@ -215,7 +256,10 @@ public class AuthActivity extends BaseActivity {
         mDataManager.getPreferencesManager().saveUserProfileData(userData);
     }
 
-    private void saveUserInDb() {
+    /**
+     * Сохраняет список пользователей в БД
+     */
+    private void saveUsersListInDb() {
         Call<UserListRes> call = mDataManager.getUserListFromNetwork();
         call.enqueue(new Callback<UserListRes>() {
             @Override
@@ -225,14 +269,17 @@ public class AuthActivity extends BaseActivity {
                         mConnector.runOperation(new SaveUsersListOperation(response), false);
                     } else {
                         LogUtils.d(TAG, "onResponse: " + String.valueOf(response.errorBody().source()));
+                        EventBus.getDefault().post(new ErrorEvent(ConstantManager.USER_LIST_NOT_SAVED));
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
+
                 }
             }
 
             @Override
             public void onFailure(Call<UserListRes> call, Throwable t) {
+                EventBus.getDefault().post(new ErrorEvent(ConstantManager.SERVER_ERROR));
             }
         });
     }

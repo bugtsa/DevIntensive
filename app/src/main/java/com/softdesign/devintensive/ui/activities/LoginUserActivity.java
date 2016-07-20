@@ -39,12 +39,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.events.ErrorEvent;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.softdesign.devintensive.utils.ValidatorUtils;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,8 +60,8 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    private static final String TAG = ConstantManager.TAG_PREFIX + MainActivity.class.getSimpleName();
+public class LoginUserActivity extends BaseActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+    private static final String TAG = ConstantManager.TAG_PREFIX + LoginUserActivity.class.getSimpleName();
 
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
@@ -331,12 +334,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         break;
                     case R.id.team_menu:
                         showSplash();
-                        Intent teamIntent = new Intent(MainActivity.this, UserListActivity.class);
+                        Intent teamIntent = new Intent(LoginUserActivity.this, UserListActivity.class);
                         startActivity(teamIntent);
                         break;
                     case R.id.auth_menu:
                         showSplash();
-                        Intent authIntent = new Intent(MainActivity.this, AuthActivity.class);
+                        Intent authIntent = new Intent(LoginUserActivity.this, AuthActivity.class);
                         startActivity(authIntent);
                         break;
                 }
@@ -458,6 +461,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    /**
+     * Устанавливает аватар пользователя со скруглёнными краями в Navigation Drawer
+     *
+     * @param selectedImage
+     */
     private void insertDrawerAvatar(Uri selectedImage) {
         Picasso.with(this)
                 .load(selectedImage)
@@ -690,9 +698,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
+        /**
+         * Необходимый метод для слушателя измения EditText`a
+         *
+         * @param charSequence
+         * @param start
+         * @param count
+         * @param after
+         */
         public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
         }
 
+        /**
+         * Необходимый метод для слушателя измения EditText`a
+         * @param charSequence
+         * @param start
+         * @param before
+         * @param count
+         */
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
         }
 
@@ -726,8 +749,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 validateUtils.isValidate(indexFieldAtUserInfoViews);
             } catch (NumberFormatException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                EventBus.getDefault().post(new ErrorEvent(ConstantManager.EDITABLE_ERROR));
             } finally {
                 skipOnChange = false;
             }
