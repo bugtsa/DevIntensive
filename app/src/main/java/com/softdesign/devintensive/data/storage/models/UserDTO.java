@@ -3,9 +3,6 @@ package com.softdesign.devintensive.data.storage.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.softdesign.devintensive.data.network.res.UserListRes;
-import com.softdesign.devintensive.data.network.res.UserModelRes;
-
 import java.util.ArrayList;
 import java.util.List;
 

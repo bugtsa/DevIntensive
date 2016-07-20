@@ -1,19 +1,18 @@
 package com.softdesign.devintensive.data.storage.models;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
 
 import com.softdesign.devintensive.data.network.res.UserListRes;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "USERS")
 public class User {

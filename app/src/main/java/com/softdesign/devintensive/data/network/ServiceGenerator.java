@@ -4,8 +4,6 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.softdesign.devintensive.data.network.interceptors.HeaderInterceptor;
 import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.DevIntensiveApplication;
-import com.squareup.picasso.Cache;
-
 
 import java.util.concurrent.TimeUnit;
 

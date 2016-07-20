@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.softdesign.devintensive.data.network.res.UserModelRes;
 
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "REPOSITORIES")
 public class Repository {
