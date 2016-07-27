@@ -138,6 +138,6 @@ public class PreferencesManager {
     }
 
     public String getUserEmail() {
-        return mSharedPreferences.getString(ConstantManager.EDIT_MAIL_KEY, "");
+        return mSharedPreferences.getString(ConstantManager.USER_EMAIL_KEY, "");
     }
 }
