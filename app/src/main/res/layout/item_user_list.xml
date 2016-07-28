@@ -139,16 +139,30 @@
             android:layout_marginTop="@dimen/spacing_normal_16"
             android:background="@color/grey_light"/>
 
-        <Button
-            android:id="@+id/more_info_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_normal_16"
-            android:paddingRight="@dimen/spacing_normal_16"
-            android:text="Просмотр"
-            android:textColor="@color/color_accent"/>
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/more_info_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_normal_16"
+                android:paddingRight="@dimen/spacing_normal_16"
+                android:text="@string/show_user_profile"
+                android:textColor="@color/color_accent"></Button>
+
+            <ImageView
+                android:id="@+id/like_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/fab_right_space"
+                android:src="@drawable/ic_favorite_border_accent_24dp"/>
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/line_size_1"

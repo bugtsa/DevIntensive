@@ -32,6 +32,7 @@ import com.softdesign.devintensive.data.storage.tasks.LoadUsersListOperation;
 import com.softdesign.devintensive.ui.adapters.UsersAdapter;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
+import com.softdesign.devintensive.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -176,10 +177,6 @@ public class UserListActivity extends BaseActivity {
         }
     }
 
-    private void showSnackBar(String message) {
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
-    }
-
     /**
      * Устанавливает аватар пользователя со скруглёнными краями в Navigation Drawer
      *
@@ -302,7 +299,7 @@ public class UserListActivity extends BaseActivity {
      */
     private void showUsers() {
         if (mUsers.size() == 0) {
-            showSnackBar(getString(R.string.error_load_users_list));
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_load_users_list));
         } else {
             mUsersAdapter = new UsersAdapter(mUsers, getApplicationContext(), new UsersAdapter.UserViewHolder.CustomClickListener() {
                 @Override

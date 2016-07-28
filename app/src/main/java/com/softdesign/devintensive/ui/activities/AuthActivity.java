@@ -21,6 +21,7 @@ import com.softdesign.devintensive.data.storage.tasks.SaveUsersListOperation;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
+import com.softdesign.devintensive.utils.SnackBarUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -119,10 +120,10 @@ public class AuthActivity extends BaseActivity {
                 startLoginUserActivity();
                 break;
             case ConstantManager.USER_NOT_AUTHORIZED:
-                showSnackBar(getString(R.string.request_auth));
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.request_auth));
                 break;
             case ConstantManager.LOGIN_OR_PASSWORD_INCORRECT:
-                showSnackBar(getString(R.string.login_pass_not_match));
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.login_pass_not_match));
                 break;
             case ConstantManager.RESPONSE_NOT_OK:
                 startLoginUserActivity();
@@ -131,10 +132,10 @@ public class AuthActivity extends BaseActivity {
                 startLoginUserActivity();
                 break;
             case ConstantManager.EDITABLE_ERROR:
-                showSnackBar(getString(R.string.editable_error));
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.editable_error));
                 break;
             case ConstantManager.USER_LIST_NOT_SAVED:
-                showSnackBar(getString(R.string.users_list_not_saved));
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.users_list_not_saved));
                 break;
         }
     }
@@ -161,10 +162,6 @@ public class AuthActivity extends BaseActivity {
         Intent loginUserIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
         finish();
         startActivity(loginUserIntent);
-    }
-
-    private void showSnackBar(String message) {
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
     /**
@@ -199,12 +196,12 @@ public class AuthActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
-                    showSnackBar(getString(R.string.error_response) + t.getMessage());
+                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
                     EventBus.getDefault().post(new ErrorEvent(ConstantManager.SERVER_ERROR));
                 }
             });
         } else {
-            showSnackBar(getString(R.string.network_not_access_response));
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
             EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));
         }
     }

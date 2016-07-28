@@ -51,4 +51,7 @@
     <string name="login_pass_not_match">Неверный логин или пароль</string>
     <string name="editable_error">Ошибка изменения строки</string>
     <string name="users_list_not_saved">Список пользователей не сохранён в ЬД</string>
+    <string name="show_user_profile">Просмотр</string>
+    <string name="photo_save_on_site">Фото сохранено на сайте</string>
+    <string name="photo_not_save_on_site">Фото сохранить на сайте не удалось</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,15 +17,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.ui.adapters.RepositoriesAdapter;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProfileUserActivity extends AppCompatActivity {
 
@@ -36,6 +40,8 @@ public class ProfileUserActivity extends AppCompatActivity {
     Toolbar mToolBar;
     @BindView(R.id.user_profile_iv_profile)
     ImageView mProfileImage;
+    @BindView(R.id.fab_user_profile)
+    ImageView mUserLike;
     @BindView(R.id.about_me_et_profile)
     EditText mUserBio;
     @BindView(R.id.rating_title_tv_profile)
@@ -48,11 +54,17 @@ public class ProfileUserActivity extends AppCompatActivity {
     @BindView(R.id.repositories_list)
     ListView mRepoListView;
 
+    private DataManager mDataManager;
+
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
         ButterKnife.bind(this);
+
+        mContext = mDataManager.getContext();
 
         setupToolBar();
         initProfileData();
@@ -108,5 +120,16 @@ public class ProfileUserActivity extends AppCompatActivity {
                 .placeholder(R.drawable.user_bg)
                 .error(R.drawable.user_bg)
                 .into(mProfileImage);
+    }
+
+    @OnClick(R.id.fab_user_profile)
+    protected void processLike() {
+//        if
+    }
+
+    private void likeUser() {
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+
+        }
     }
 }

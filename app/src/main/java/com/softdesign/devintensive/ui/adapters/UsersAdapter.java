@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
@@ -116,6 +117,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         protected TextView mFullName, mRating, mCodeLines, mProjects, mBio;
         protected Button mShowMore;
         protected Drawable mBugtsa;
+        protected ImageView mLike;
 
         private CustomClickListener mListener;
 
@@ -130,10 +132,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             mProjects = (TextView) itemView.findViewById(R.id.user_projects_tv);
             mBio = (TextView) itemView.findViewById(R.id.user_bio_tv);
             mShowMore = (Button) itemView.findViewById(R.id.more_info_btn);
+            mLike = (ImageView) itemView.findViewById(R.id.like_btn);
 
             mBugtsa = userPhoto.getContext().getResources().getDrawable(R.drawable.user_bg);
 
             mShowMore.setOnClickListener(this);
+            mLike.setOnClickListener(this);
         }
 
         @Override
