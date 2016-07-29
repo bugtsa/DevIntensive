@@ -95,7 +95,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
                 });
 
         holder.mFullName.setText(user.getFullName());
-        holder.mRating.setText(String.valueOf(user.getRating()));
+        holder.mRait.setText(String.valueOf(user.getRait()));
         holder.mCodeLines.setText(String.valueOf(user.getCodeLines()));
         holder.mProjects.setText(String.valueOf(user.getProjects()));
 
@@ -105,6 +105,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             holder.mBio.setVisibility(View.VISIBLE);
             holder.mBio.setText(user.getBio());
         }
+
+        holder.mRating.setText(String.valueOf(user.getRating() - user.getRait()));
     }
 
     @Override
@@ -114,7 +116,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected AspectRatioImageView userPhoto;
-        protected TextView mFullName, mRating, mCodeLines, mProjects, mBio;
+        protected TextView mFullName, mRait, mRating, mCodeLines, mProjects, mBio;
         protected Button mShowMore;
         protected Drawable mBugtsa;
         protected ImageView mLike;
@@ -127,12 +129,13 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
             userPhoto = (AspectRatioImageView) itemView.findViewById(R.id.user_photo_iv);
             mFullName = (TextView) itemView.findViewById(R.id.user_full_name_tv);
-            mRating = (TextView) itemView.findViewById(R.id.user_rating_tv);
+            mRait = (TextView) itemView.findViewById(R.id.user_rait_tv);
             mCodeLines = (TextView) itemView.findViewById(R.id.user_lines_code_tv);
             mProjects = (TextView) itemView.findViewById(R.id.user_projects_tv);
             mBio = (TextView) itemView.findViewById(R.id.user_bio_tv);
             mShowMore = (Button) itemView.findViewById(R.id.more_info_btn);
-            mLike = (ImageView) itemView.findViewById(R.id.like_btn);
+            mLike = (ImageView) itemView.findViewById(R.id.like_btn_iv);
+            mRating =(TextView) itemView.findViewById(R.id.like_quantity);
 
             mBugtsa = userPhoto.getContext().getResources().getDrawable(R.drawable.user_bg);
 

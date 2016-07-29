@@ -68,8 +68,6 @@ public class ProfileUserActivity extends AppCompatActivity {
 
     private String mRemoteIdShowUser;
 
-    private String mUserRait;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +122,6 @@ public class ProfileUserActivity extends AppCompatActivity {
         mRemoteIdShowUser = userDTO.getRemoteId();
         mUserBio.setText(userDTO.getBio());
         mUserRating.setText(userDTO.getRating());
-        mUserRait = userDTO.getRait();
         mUserCodeLines.setText(userDTO.getCodeLines());
         mUserProjects.setText(userDTO.getProjects());
 
@@ -139,7 +136,7 @@ public class ProfileUserActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab_user_profile)
     protected void processLike() {
-        if (mUserRait.equals(mUserRating)) {
+        if (mUserRating.equals(mUserRating)) {
             likeUser(mRemoteIdShowUser);
             mUserLike.setImageDrawable(getDrawable(R.drawable.ic_favorite_white_24dp));
         } else {

@@ -12,46 +12,9 @@ public class LikeModelRes {
     private boolean success;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private UserModelRes.ProfileValues data;
 
-    public Data getData() {
+    public UserModelRes.ProfileValues getData() {
         return data;
-    }
-
-    public class Data {
-
-        @SerializedName("homeTask")
-        @Expose
-        private int homeTask;
-        @SerializedName("projects")
-        @Expose
-        private int projects;
-        @SerializedName("linesCode")
-        @Expose
-        private int linesCode;
-        @SerializedName("likesBy")
-        @Expose
-        private List<String> likesBy = new ArrayList<String>();
-        @SerializedName("rait")
-        @Expose
-        private int rait;
-        @SerializedName("updated")
-        @Expose
-        private String updated;
-        @SerializedName("rating")
-        @Expose
-        private int rating;
-
-        public int getRating() {
-            return rating;
-        }
-
-        public int getRait() {
-            return rait;
-        }
-
-        public List<String> getLikesBy() {
-            return likesBy;
-        }
     }
 }

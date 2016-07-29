@@ -57,6 +57,7 @@
     <string name="photo_save_on_site">Фото сохранено на сайте</string>
     <string name="photo_not_save_on_site">Фото сохранить на сайте не удалось</string>
     <string name="set_like">Пользователь поставил Вам лайк</string>
+    <string name="zeros">0</string>
     //End Errors
 
 

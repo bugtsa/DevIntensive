@@ -14,21 +14,23 @@ public class UserDTO implements Parcelable {
     private String mRemoteId;
     private String mPhoto;
     private String mFullName;
-    private String mRating;
     private String mRait;
+    private String mRating;
     private String mCodeLines;
     private String mProjects;
     private String mBio;
     private List<String> mRepositories;
+    private List<String> mLikes;
 
     public UserDTO(User userData) {
         List<String> repoLink = new ArrayList<>();
+        List<String> likeIds = new ArrayList<>();
 
         mRemoteId = userData.getRemoteId();
         mPhoto = userData.getPhoto();
         mFullName = userData.getFullName();
-        mRating = String.valueOf(userData.getRating());
         mRait = String.valueOf(userData.getRait());
+        mRating = String.valueOf(userData.getRating());
         mCodeLines = String.valueOf(userData.getCodeLines());
         mProjects = String.valueOf(userData.getProjects());
         mBio = userData.getBio();
@@ -37,14 +39,19 @@ public class UserDTO implements Parcelable {
             repoLink.add(gitLink.getRepositoryName());
         }
         mRepositories = repoLink;
+
+        for (Like like : userData.getLikes()) {
+            likeIds.add(like.getLikeUserId());
+        }
+        mLikes = likeIds;
     }
 
     protected UserDTO(Parcel in) {
         mRemoteId = in.readString();
         mPhoto = in.readString();
         mFullName = in.readString();
-        mRating = in.readString();
         mRait = in.readString();
+        mRating = in.readString();
         mCodeLines = in.readString();
         mProjects = in.readString();
         mBio = in.readString();
@@ -53,6 +60,12 @@ public class UserDTO implements Parcelable {
             in.readList(mRepositories, String.class.getClassLoader());
         } else {
             mRepositories = null;
+        }
+        if (in.readByte() == 0x01) {
+            mLikes = new ArrayList<String>();
+            in.readList(mLikes, String.class.getClassLoader());
+        } else {
+            mLikes = null;
         }
     }
 
@@ -66,8 +79,8 @@ public class UserDTO implements Parcelable {
         dest.writeString(mRemoteId);
         dest.writeString(mPhoto);
         dest.writeString(mFullName);
-        dest.writeString(mRating);
         dest.writeString(mRait);
+        dest.writeString(mRating);
         dest.writeString(mCodeLines);
         dest.writeString(mProjects);
         dest.writeString(mBio);
@@ -76,6 +89,12 @@ public class UserDTO implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(mRepositories);
+        }
+        if (mLikes == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(mLikes);
         }
     }
 
@@ -102,12 +121,10 @@ public class UserDTO implements Parcelable {
         return mFullName;
     }
 
+    public String getRait() {return mRait;}
+
     public String getRating() {
         return mRating;
-    }
-
-    public String getRait() {
-        return mRait;
     }
 
     public String getCodeLines() {
@@ -124,5 +141,9 @@ public class UserDTO implements Parcelable {
 
     public List<String> getRepositories() {
         return mRepositories;
+    }
+
+    public List<String> getLikes() {
+        return mLikes;
     }
 }

@@ -52,7 +52,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/user_rating_tv"
+                    android:id="@+id/user_rait_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/ff_medium"
@@ -154,14 +154,31 @@
                 android:text="@string/show_user_profile"
                 android:textColor="@color/color_accent"></Button>
 
-            <ImageView
-                android:id="@+id/like_btn"
+            <LinearLayout
+                android:id="@+id/like_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
-                android:layout_marginRight="@dimen/fab_right_space"
-                android:src="@drawable/ic_favorite_border_accent_24dp"/>
+                android:layout_marginRight="@dimen/spacing_normal_16">
+
+                <ImageView
+                    android:id="@+id/like_btn_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/spacing_big_medium_48"
+                    android:src="@drawable/ic_favorite_border_accent_24dp"/>
+
+                <TextView
+                    android:id="@+id/like_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_small_8"
+                    android:text="@string/zeros"
+                    android:textSize="@dimen/font_big_larger_24"
+                    android:textColor="@color/color_accent"/>
+            </LinearLayout>
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
