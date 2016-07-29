@@ -84,6 +84,8 @@ public class DataManager {
 
     public Call<LikeModelRes> likeUser(String userId) {return mRestService.likeUser(userId);}
 
+    public Call<LikeModelRes> unLikeUser(String userId) {return mRestService.unLikeUser(userId);}
+
     //end region
 
     //region ============Network=================

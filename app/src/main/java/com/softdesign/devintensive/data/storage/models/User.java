@@ -12,6 +12,7 @@ import org.greenrobot.greendao.annotation.JoinProperty;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(active = true, nameInDb = "USERS")
@@ -34,6 +35,8 @@ public class User {
     @Unique
     private String searchName;
 
+    private int rait;
+
     private int rating;
 
     private int codeLines;
@@ -53,6 +56,7 @@ public class User {
         fullName = userRes.getFullName();
         searchName = userRes.getFullName().toUpperCase();
         rating = userRes.getProfileValues().getRating();
+        rait = rating;
         codeLines = userRes.getProfileValues().getLinesCode();
         projects = userRes.getProfileValues().getProjects();
         bio = userRes.getPublicInfo().getBio();
@@ -209,15 +213,23 @@ public class User {
         this.id = id;
     }
 
-    @Generated(hash = 793224633)
-    public User(Long id, @NonNull String remoteId, String photo,
-            @NonNull String fullName, @NonNull String searchName, int rating,
-            int codeLines, int projects, String bio) {
+    public int getRait() {
+        return this.rait;
+    }
+
+    public void setRait(int rait) {
+        this.rait = rait;
+    }
+
+    @Generated(hash = 1684983633)
+    public User(Long id, @NonNull String remoteId, String photo, @NonNull String fullName,
+            @NonNull String searchName, int rait, int rating, int codeLines, int projects, String bio) {
         this.id = id;
         this.remoteId = remoteId;
         this.photo = photo;
         this.fullName = fullName;
         this.searchName = searchName;
+        this.rait = rait;
         this.rating = rating;
         this.codeLines = codeLines;
         this.projects = projects;

@@ -11,9 +11,11 @@ import java.util.List;
  */
 public class UserDTO implements Parcelable {
 
+    private String mRemoteId;
     private String mPhoto;
     private String mFullName;
     private String mRating;
+    private String mRait;
     private String mCodeLines;
     private String mProjects;
     private String mBio;
@@ -22,9 +24,11 @@ public class UserDTO implements Parcelable {
     public UserDTO(User userData) {
         List<String> repoLink = new ArrayList<>();
 
+        mRemoteId = userData.getRemoteId();
         mPhoto = userData.getPhoto();
         mFullName = userData.getFullName();
         mRating = String.valueOf(userData.getRating());
+        mRait = String.valueOf(userData.getRait());
         mCodeLines = String.valueOf(userData.getCodeLines());
         mProjects = String.valueOf(userData.getProjects());
         mBio = userData.getBio();
@@ -36,9 +40,11 @@ public class UserDTO implements Parcelable {
     }
 
     protected UserDTO(Parcel in) {
+        mRemoteId = in.readString();
         mPhoto = in.readString();
         mFullName = in.readString();
         mRating = in.readString();
+        mRait = in.readString();
         mCodeLines = in.readString();
         mProjects = in.readString();
         mBio = in.readString();
@@ -57,9 +63,11 @@ public class UserDTO implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mRemoteId);
         dest.writeString(mPhoto);
         dest.writeString(mFullName);
         dest.writeString(mRating);
+        dest.writeString(mRait);
         dest.writeString(mCodeLines);
         dest.writeString(mProjects);
         dest.writeString(mBio);
@@ -84,6 +92,8 @@ public class UserDTO implements Parcelable {
         }
     };
 
+    public String getRemoteId() { return mRemoteId; }
+
     public String getPhoto() {
         return mPhoto;
     }
@@ -94,6 +104,10 @@ public class UserDTO implements Parcelable {
 
     public String getRating() {
         return mRating;
+    }
+
+    public String getRait() {
+        return mRait;
     }
 
     public String getCodeLines() {

@@ -26,7 +26,9 @@ public interface RestService {
     @GET("user/list?orderBy=rating")
     Call<UserListRes> getUserList();
 
-    @Multipart
     @POST("user/{userId}/like")
-    Call<LikeModelRes> likeUser(@Part("userId") String userId);
+    Call<LikeModelRes> likeUser(@Path("userId") String userId);
+
+    @POST("user/{userId}/unlike")
+    Call<LikeModelRes> unLikeUser(@Path("userId") String userId);
 }

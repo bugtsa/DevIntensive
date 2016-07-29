@@ -415,6 +415,8 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
         });
     }
 
+
+
     /**
      * Отправляет фотографию профиля пользователя на сайт DevIntensive
      */
