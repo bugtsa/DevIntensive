@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.data.storage.models.Like;
 import com.softdesign.devintensive.data.storage.models.User;
+import com.softdesign.devintensive.ui.activities.interfaces.CustomClickListener;
 import com.softdesign.devintensive.ui.views.AspectRatioImageView;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
@@ -26,13 +29,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     private static final String TAG = ConstantManager.TAG_PREFIX + UsersAdapter.class.getSimpleName();
     private Context mContext;
     private List<User> mUsers;
-    private List<String> mUsersRes;
-    private UserViewHolder.CustomClickListener mCustomClickListener;
+//    private List<User> mFilteredUsers;
+//    private UserFilter mUserFilter;
 
-    public UsersAdapter(List<User> users, Context context, UserViewHolder.CustomClickListener customClickListener) {
-        mUsers = users;
-        mUsersRes = new ArrayList<>();
+    private CustomClickListener mCustomClickListener;
+
+    public UsersAdapter(List<User> users, Context context, CustomClickListener customClickListener) {
         mContext = context;
+        mUsers = users;
+//        mFilteredUsers = new ArrayList<>();
+//        mFilteredUsers.addAll(users);
+//        mUserFilter = new UserFilter(UsersAdapter.this);
+//        mUsersRes = new ArrayList<>();
         mCustomClickListener = customClickListener;
     }
 
@@ -106,7 +114,13 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             holder.mBio.setText(user.getBio());
         }
 
-        holder.mRating.setText(String.valueOf(user.getRating() - user.getRait()));
+        holder.mLikeQuantity.setText(String.valueOf(user.getRating() - user.getRait()));
+
+        if (holder.isUserLiked(user)) {
+            holder.mLike.setImageResource(R.drawable.ic_favorite_accent_24dp);
+        } else {
+            holder.mLike.setImageResource(R.drawable.ic_favorite_border_accent_24dp);
+        }
     }
 
     @Override
@@ -114,9 +128,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return mUsers.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         protected AspectRatioImageView userPhoto;
-        protected TextView mFullName, mRait, mRating, mCodeLines, mProjects, mBio;
+        protected TextView mFullName, mRait, mLikeQuantity, mCodeLines, mProjects, mBio;
         protected Button mShowMore;
         protected Drawable mBugtsa;
         protected ImageView mLike;
@@ -135,7 +149,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             mBio = (TextView) itemView.findViewById(R.id.user_bio_tv);
             mShowMore = (Button) itemView.findViewById(R.id.more_info_btn);
             mLike = (ImageView) itemView.findViewById(R.id.like_btn_iv);
-            mRating =(TextView) itemView.findViewById(R.id.like_quantity);
+            mLikeQuantity =(TextView) itemView.findViewById(R.id.like_quantity);
 
             mBugtsa = userPhoto.getContext().getResources().getDrawable(R.drawable.user_bg);
 
@@ -145,16 +159,85 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
         @Override
         public void onClick(View v) {
-            if (mListener != null) {
-                mListener.onUserItemClickListener(getAdapterPosition());
+            if (mListener == null) {
+                return;
+            }
+
+//            int position = mUsers.indexOf(mFilteredUsers.get(getAdapterPosition()));
+            int position = mUsers.indexOf(mUsers.get(getAdapterPosition()));
+            switch (v.getId()) {
+                case R.id.more_info_btn:
+                    mListener.onUserItemClickListener(ConstantManager.START_PROFILE_ACTIVITY_KEY, position);
+                    break;
+                case R.id.like_btn_iv:
+                    String action;
+//                    if(isUserLiked(mFilteredUsers.get(getAdapterPosition()))) {
+                    if(isUserLiked(mUsers.get(getAdapterPosition()))) {
+                        action = ConstantManager.UNLIKE_USER_KEY;
+                    } else {
+                        action = ConstantManager.LIKE_USER_KEY;
+                    }
+                    mListener.onUserItemClickListener(action, position);
+                    break;
             }
         }
 
-        /**
-         * Слушает собития прикосания к кнопке в RecyclerView
-         */
-        public interface CustomClickListener {
-            void onUserItemClickListener(int position);
+        private boolean isUserLiked(User user) {
+            List<Like> likes = user.getLikes();
+            String userId = DataManager.getInstance().getPreferencesManager().getUserId();
+
+            for (Like like : likes) {
+                if (like.getLikeUserId().equals(userId)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
+
+//    public class UserFilter extends Filter {
+//        private UsersAdapter mAdapter;
+//
+//        public UserFilter(UsersAdapter adapter) {
+//            super();
+//            mAdapter = adapter;
+//        }
+//
+//        @Override
+//        protected FilterResults performFiltering(CharSequence constraint) {
+//            mFilteredUsers.clear();
+//            FilterResults results = new FilterResults();
+//            if (constraint.length() == 0) {
+//                mFilteredUsers.addAll(mUsers);
+//            } else {
+//                String filterString = constraint.toString().toLowerCase().trim();
+//                if (filterString.contains(" ")) {
+//                    int spaceIndex = filterString.indexOf(" ");
+//                    String filterPattern1 = filterString.substring(0, spaceIndex - 1);
+//                    String filterPattern2 = filterString.substring(spaceIndex + 1, filterString.length());
+//                    for (User user : mUsers) {
+//                        String userName = user.getFullName().toLowerCase();
+//                        if (userName.contains(filterPattern1)
+//                                && userName.contains(filterPattern2)) {
+//                            mFilteredUsers.add(user);
+//                        }
+//                    }
+//                } else {
+//                    for (User user : mUsers) {
+//                        if (user.getFullName().toLowerCase().contains(filterString)) {
+//                            mFilteredUsers.add(user);
+//                        }
+//                    }
+//                }
+//            }
+//            results.values = mFilteredUsers;
+//            results.count = mFilteredUsers.size();
+//            return results;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
+//            mAdapter.notifyDataSetChanged();
+//        }
+//    }
 }
