@@ -324,10 +324,14 @@ public class UserListActivity extends BaseActivity {
                         profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
                         startActivity(profileIntent);
                     } else if (action.equals(ConstantManager.LIKE_USER_KEY)) {
-                        likeUser(position);
-                    } else if (action.equals(ConstantManager.UNLIKE_USER_KEY)) {
-                        unLikeUser(position);
+                        if (mUsersAdapter.isUserLiked(mUsers.get(position))) {
+                            unLikeUser(position);
+                        } else {
+                            likeUser(position);
+                        }
                     }
+//                    } else if (action.equals(ConstantManager.UNLIKE_USER_KEY)) {
+//                    }
                 }
             });
             mRecyclerView.swapAdapter(mUsersAdapter, false);
@@ -420,11 +424,13 @@ public class UserListActivity extends BaseActivity {
                         user.setProjects(userData.getProjects());
 
                         mDataManager.getDaoSession().getLikeDao().insert(
-                                new Like(mDataManager.getPreferencesManager().getUserId(), user.getRemoteId()));
+                                new Like(mDataManager.getPreferencesManager().getUserId(), user.getRemoteId())
+                        );
                         user.resetLikes();
+                        user.setRating(userData.getRating());
+                        mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
 
                         mUsersAdapter.notifyItemChanged(position);
-//                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.set_like));
                     } else {
                         SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
                     }
@@ -468,9 +474,10 @@ public class UserListActivity extends BaseActivity {
                             like.delete();
                         }
                         user.resetLikes();
+                        user.setRating(userData.getRating());
+                        mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
 
                         mUsersAdapter.notifyItemChanged(position);
-//                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.set_like));
                     } else {
                         SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
                     }

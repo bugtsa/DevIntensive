@@ -41,7 +41,6 @@ public interface ConstantManager {
     String PARCELABLE_KEY = "PARCELABLE_KEY";
     String START_PROFILE_ACTIVITY_KEY = "START_PROFILE_ACTIVITY_KEY";
     String LIKE_USER_KEY = "LIKE_USER_KEY";
-    String UNLIKE_USER_KEY = "UNLIKE_USER_KEY";
 
     String FORGOT_PASSWORD = "http://devintensive.softdesign-apps.ru/forgotpass";
     String PREFIX_URL_LINK = "http://";
