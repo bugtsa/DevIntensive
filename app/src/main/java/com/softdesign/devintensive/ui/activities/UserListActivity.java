@@ -221,6 +221,7 @@ public class UserListActivity extends BaseActivity {
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
+        mNavigationView.setCheckedItem(R.id.team_menu);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -406,6 +407,54 @@ public class UserListActivity extends BaseActivity {
     }
 
     /**
+     * Вызывает call запрос и обрабатывает callBack от него для установки или удаления лайка
+     * @param call вызов
+     * @param user пользователь
+     * @param position позиция в RecycleView
+     * @param isLikeUser true - установка лайка, false - удаление
+     */
+    private void callWithLikeModel(Call call, final User user, final int position, final boolean isLikeUser) {
+        call.enqueue(new Callback<LikeModelRes>() {
+            @Override
+            public void onResponse(Call<LikeModelRes> call, Response<LikeModelRes> response) {
+                if (response.code() == 200) {
+                    UserModelRes.ProfileValues userData = response.body().getData();
+                    user.setRait(userData.getRait());
+                    user.setCodeLines(userData.getLinesCode());
+                    user.setProjects(userData.getProjects());
+
+                    if (isLikeUser) {
+                        mDataManager.getDaoSession().getLikeDao().insert(
+                                new Like(mDataManager.getPreferencesManager().getUserId(), user.getRemoteId())
+                        );
+                    } else {
+                        List<Like> likes = mDataManager.getDaoSession().queryBuilder(Like.class).where(
+                                LikeDao.Properties.UserRemoteId.eq(user.getRemoteId()),
+                                LikeDao.Properties.LikeUserId.eq(mDataManager.getPreferencesManager().getUserId())
+                        ).list();
+                        for (Like like : likes) {
+                            like.delete();
+                        }
+                    }
+                    user.resetLikes();
+                    user.setRating(userData.getRating());
+                    mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
+
+                    mUsersAdapter.notifyItemChanged(position);
+                } else {
+                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LikeModelRes> call, Throwable t) {
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
+                EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
+            }
+        });
+    }
+
+    /**
      * Ставит лайк пользователю
      *
      * @param position позиция пользователя, которому ставится лайк
@@ -414,34 +463,7 @@ public class UserListActivity extends BaseActivity {
         final User user = mUsers.get(position);
         if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
             Call<LikeModelRes> call = mDataManager.likeUser(user.getRemoteId());
-            call.enqueue(new Callback<LikeModelRes>() {
-                @Override
-                public void onResponse(Call<LikeModelRes> call, Response<LikeModelRes> response) {
-                    if (response.code() == 200) {
-                        UserModelRes.ProfileValues userData = response.body().getData();
-                        user.setRait(userData.getRait());
-                        user.setCodeLines(userData.getLinesCode());
-                        user.setProjects(userData.getProjects());
-
-                        mDataManager.getDaoSession().getLikeDao().insert(
-                                new Like(mDataManager.getPreferencesManager().getUserId(), user.getRemoteId())
-                        );
-                        user.resetLikes();
-                        user.setRating(userData.getRating());
-                        mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
-
-                        mUsersAdapter.notifyItemChanged(position);
-                    } else {
-                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LikeModelRes> call, Throwable t) {
-                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
-                    EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
-                }
-            });
+            callWithLikeModel(call, user, position, true);
         } else {
             SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
             EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));
@@ -457,38 +479,7 @@ public class UserListActivity extends BaseActivity {
         final User user = mUsers.get(position);
         if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
             Call<LikeModelRes> call = mDataManager.unLikeUser(user.getRemoteId());
-            call.enqueue(new Callback<LikeModelRes>() {
-                @Override
-                public void onResponse(Call<LikeModelRes> call, Response<LikeModelRes> response) {
-                    if (response.code() == 200) {
-                        UserModelRes.ProfileValues userData = response.body().getData();
-                        user.setRait(userData.getRait());
-                        user.setCodeLines(userData.getLinesCode());
-                        user.setProjects(userData.getProjects());
-
-                        List<Like> likes = mDataManager.getDaoSession().queryBuilder(Like.class).where(
-                                LikeDao.Properties.UserRemoteId.eq(user.getRemoteId()),
-                                LikeDao.Properties.LikeUserId.eq(mDataManager.getPreferencesManager().getUserId())
-                        ).list();
-                        for (Like like : likes) {
-                            like.delete();
-                        }
-                        user.resetLikes();
-                        user.setRating(userData.getRating());
-                        mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
-
-                        mUsersAdapter.notifyItemChanged(position);
-                    } else {
-                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LikeModelRes> call, Throwable t) {
-                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
-                    EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
-                }
-            });
+            callWithLikeModel(call, user, position, false);
         } else {
             SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
             EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));

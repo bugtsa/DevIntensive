@@ -28,18 +28,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     private static final String TAG = ConstantManager.TAG_PREFIX + UsersAdapter.class.getSimpleName();
     private Context mContext;
     private List<User> mUsers;
-//    private List<User> mFilteredUsers;
-//    private UserFilter mUserFilter;
 
     private CustomClickListener mCustomClickListener;
 
     public UsersAdapter(List<User> users, Context context, CustomClickListener customClickListener) {
         mContext = context;
         mUsers = users;
-//        mFilteredUsers = new ArrayList<>();
-//        mFilteredUsers.addAll(users);
-//        mUserFilter = new UserFilter(UsersAdapter.this);
-//        mUsersRes = new ArrayList<>();
         mCustomClickListener = customClickListener;
     }
 
@@ -50,7 +44,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     }
 
     /**
-     * Bind данных
+     * Bind данных для Holder`a
      *
      * @param holder   элемент
      * @param position позиция
@@ -127,6 +121,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return mUsers.size();
     }
 
+    /**
+     * Проверяет лайкнул ли залогиненный пользователь
+     * @param user пользователь, который проверяется
+     * @return true - лайкнули, false - нет
+     */
     public boolean isUserLiked(User user) {
         List<Like> likes = user.getLikes();
         String userId = DataManager.getInstance().getPreferencesManager().getUserId();

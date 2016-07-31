@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -64,6 +63,9 @@ public class AuthActivity extends BaseActivity {
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
+        if (mDataManager.getPreferencesManager().getAuthToken() != null && mDataManager.getPreferencesManager().getAuthToken() != "") {
+            startLoginUserActivity();
+        }
     }
 
     @Override
@@ -98,8 +100,9 @@ public class AuthActivity extends BaseActivity {
     }
 
     public void onOperationFinished(final SaveUsersListOperation.Result result) {
-        Intent loginIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
-        startActivity(loginIntent);
+//        Intent loginIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
+//        startActivity(loginIntent);
+        startLoginUserActivity();
     }
 
     /**
@@ -160,7 +163,7 @@ public class AuthActivity extends BaseActivity {
      */
     private void startLoginUserActivity() {
         Intent loginUserIntent = new Intent(AuthActivity.this, LoginUserActivity.class);
-        finish();
+//        finish();
         startActivity(loginUserIntent);
     }
 
@@ -267,16 +270,18 @@ public class AuthActivity extends BaseActivity {
                     } else {
                         LogUtils.d(TAG, "onResponse: " + String.valueOf(response.errorBody().source()));
                         EventBus.getDefault().post(new ErrorEvent(ConstantManager.USER_LIST_NOT_SAVED));
+                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + String.valueOf(response.errorBody().source()));
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-
+                    SnackBarUtils.show(mCoordinatorLayout, e.toString());
                 }
             }
 
             @Override
             public void onFailure(Call<UserListRes> call, Throwable t) {
                 EventBus.getDefault().post(new ErrorEvent(ConstantManager.SERVER_ERROR));
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_load_users_list));
             }
         });
     }

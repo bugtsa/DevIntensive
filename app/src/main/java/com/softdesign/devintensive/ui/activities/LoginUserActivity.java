@@ -335,6 +335,7 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
+        mNavigationView.setCheckedItem(R.id.user_profile_menu);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
