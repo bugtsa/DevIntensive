@@ -2,6 +2,7 @@
 
     <string name="ff_regular">sans-serif</string>
     <string name="ff_medium">sans-serif-medium</string>
+    <string name="ff_condensed">sans-serif-condensed</string>
 
     <string name="app_name">DevIntensive</string>
     <string name="my_name">Полховцев Владимир</string>

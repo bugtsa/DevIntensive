@@ -52,11 +52,11 @@ public class ProfileUserActivity extends AppCompatActivity {
     ImageView mUserLike;
     @BindView(R.id.about_me_et_profile)
     EditText mUserBio;
-    @BindView(R.id.rating_title_tv_profile)
+    @BindView(R.id.rating_quantity_static_tv)
     TextView mUserRating;
-    @BindView(R.id.lines_code_title_tv_profile)
+    @BindView(R.id.lines_code_quantity_static_tv)
     TextView mUserCodeLines;
-    @BindView(R.id.project_title_tv_profile)
+    @BindView(R.id.project_quantity_static_tv)
     TextView mUserProjects;
 
     @BindView(R.id.repositories_list)

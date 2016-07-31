@@ -73,6 +73,19 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <LinearLayout
+            android:id="@+id/user_info_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/profile_info_height_112"
+            android:background="@color/color_primary"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:behavior_min_height="@dimen/size_medium_56"
+            app:layout_behavior=".ui.behaviors.UserInfoBehavior">
+
+            <include layout="@layout/user_info_bar_content"/>
+        </LinearLayout>
+
         <include layout="@layout/user_profile_content"></include>
 
         <android.support.design.widget.FloatingActionButton

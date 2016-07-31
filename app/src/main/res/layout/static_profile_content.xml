@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
@@ -12,53 +12,53 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="104dp"
-            android:background="#5d5d5d"
+            android:layout_height="@dimen/profile_info_height_112"
+            android:background="@color/color_primary"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <LinearLayout
-                style="@style/sub_linear_layout">
+                style="@style/user_info_bar_item.static">
 
                 <TextView
-                    android:id="@+id/rating_title_tv_profile"
-                    style="@style/text_view.top"/>
+                    android:id="@+id/rating_quantity_static_tv"
+                    style="@style/user_info_bar_text.quantity"/>
 
                 <TextView
-                    android:id="@+id/rating_body_tv"
-                    style="@style/text_view.bottom"
+                    android:id="@+id/rating_title_static_tv"
+                    style="@style/user_info_bar_text"
                     android:text="@string/rating"/>
             </LinearLayout>
 
             <View
-                style="@style/vertical_divider"></View>
+                style="@style/vertical_divider.static"></View>
 
             <LinearLayout
-                style="@style/sub_linear_layout">
+                style="@style/user_info_bar_item.static">
 
                 <TextView
-                    android:id="@+id/lines_code_title_tv_profile"
-                    style="@style/text_view.top"/>
+                    android:id="@+id/lines_code_quantity_static_tv"
+                    style="@style/user_info_bar_text.quantity"/>
 
                 <TextView
-                    android:id="@+id/lines_code_body_tv"
-                    style="@style/text_view.bottom"
+                    android:id="@+id/lines_code_title_static_tv"
+                    style="@style/user_info_bar_text"
                     android:text="@string/lines_code"/>
             </LinearLayout>
 
             <View
-                style="@style/vertical_divider"></View>
+                style="@style/vertical_divider.static"></View>
 
             <LinearLayout
-                style="@style/sub_linear_layout">
+                style="@style/user_info_bar_item.static">
 
                 <TextView
-                    android:id="@+id/project_title_tv_profile"
-                    style="@style/text_view.top"/>
+                    android:id="@+id/project_quantity_static_tv"
+                    style="@style/user_info_bar_text.quantity"/>
 
                 <TextView
-                    android:id="@+id/project_body_tv"
-                    style="@style/text_view.bottom"
+                    android:id="@+id/project_title_static_tv"
+                    style="@style/user_info_bar_text"
                     android:text="@string/projects"/>
             </LinearLayout>
         </LinearLayout>
