@@ -47,3 +47,11 @@ local.properties
 gradlew
 gradlew.bat
 gradle.properties
+
+app/src/main/java/com/softdesign/devintensive/data/storage/models/DaoMaster\.java
+
+app/src/main/java/com/softdesign/devintensive/data/storage/models/DaoSession\.java
+
+app/src/main/java/com/softdesign/devintensive/data/storage/models/LikeDao\.java
+
+app/src/main/java/com/softdesign/devintensive/data/storage/models/UserDao\.java
