@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+    <LinearLayout
+        style="@style/user_info_bar_item.dynamic">
+
+        <TextView
+            android:id="@+id/rating_title_tv"
+            style="@style/user_info_bar_text.quantity"/>
+
+        <TextView
+            android:id="@+id/rating_body_tv"
+            style="@style/user_info_bar_text"
+            android:text="@string/rating"/>
+    </LinearLayout>
+
+    <View
+        style="@style/vertical_divider.dynamic"></View>
+
+    <LinearLayout
+        style="@style/user_info_bar_item.dynamic">
+
+        <TextView
+            android:id="@+id/lines_code_title_tv"
+            style="@style/user_info_bar_text.quantity"/>
+
+        <TextView
+            android:id="@+id/lines_code_body_tv"
+            style="@style/user_info_bar_text"
+            android:text="@string/lines_code"/>
+    </LinearLayout>
+
+    <View
+        style="@style/vertical_divider.dynamic"></View>
+
+    <LinearLayout
+        style="@style/user_info_bar_item.dynamic">
+
+        <TextView
+            android:id="@+id/project_title_tv"
+            style="@style/user_info_bar_text.quantity"/>
+
+        <TextView
+            android:id="@+id/project_body_tv"
+            style="@style/user_info_bar_text"
+            android:text="@string/projects"/>
+    </LinearLayout>
+</LinearLayout>

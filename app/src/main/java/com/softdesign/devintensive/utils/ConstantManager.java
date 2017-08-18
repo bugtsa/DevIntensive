@@ -39,12 +39,14 @@ public interface ConstantManager {
     String USER_ID_KEY = "USER_ID_KEY";
     String USER_FULL_NAME_KEY = "USER_FULL_NAME_KEY";
     String PARCELABLE_KEY = "PARCELABLE_KEY";
+    String START_PROFILE_ACTIVITY_KEY = "START_PROFILE_ACTIVITY_KEY";
+    String LIKE_USER_KEY = "LIKE_USER_KEY";
 
     String FORGOT_PASSWORD = "http://devintensive.softdesign-apps.ru/forgotpass";
     String PREFIX_URL_LINK = "http://";
     int SEARCH_DELAY = 1500;
-    int SEARCH_WITHOUT_DELAY = 0;
 
+    int SEARCH_WITHOUT_DELAY = 0;
     int RESPONSE_OK = 200;
     int USER_NOT_AUTHORIZED = 401;
     int LOGIN_OR_PASSWORD_INCORRECT = 404;

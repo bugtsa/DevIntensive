@@ -1,12 +1,12 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,15 +23,23 @@ import android.widget.TextView;
 
 import com.redmadrobot.chronos.ChronosConnector;
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.events.ErrorEvent;
 import com.softdesign.devintensive.data.events.TimeEvent;
 import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.data.network.res.LikeModelRes;
+import com.softdesign.devintensive.data.network.res.UserModelRes;
+import com.softdesign.devintensive.data.storage.models.Like;
+import com.softdesign.devintensive.data.storage.models.LikeDao;
 import com.softdesign.devintensive.data.storage.models.User;
 import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.data.storage.tasks.LoadUserByNameOperation;
 import com.softdesign.devintensive.data.storage.tasks.LoadUsersListOperation;
+import com.softdesign.devintensive.ui.activities.interfaces.CustomClickListener;
 import com.softdesign.devintensive.ui.adapters.UsersAdapter;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
+import com.softdesign.devintensive.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +50,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserListActivity extends BaseActivity {
     private static final String TAG = ConstantManager.TAG_PREFIX + UserListActivity.class.getSimpleName();
@@ -62,6 +73,8 @@ public class UserListActivity extends BaseActivity {
     RecyclerView mRecyclerView;
 
     private DataManager mDataManager;
+
+    private Context mContext;
     private UsersAdapter mUsersAdapter;
     private List<User> mUsers;
 
@@ -82,6 +95,7 @@ public class UserListActivity extends BaseActivity {
         mConnector.onCreate(this, savedInstanceState);
 
         mDataManager = DataManager.getInstance();
+        mContext = mDataManager.getContext();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -176,10 +190,6 @@ public class UserListActivity extends BaseActivity {
         }
     }
 
-    private void showSnackBar(String message) {
-        Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
-    }
-
     /**
      * Устанавливает аватар пользователя со скруглёнными краями в Navigation Drawer
      *
@@ -211,6 +221,7 @@ public class UserListActivity extends BaseActivity {
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
+        mNavigationView.setCheckedItem(R.id.team_menu);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -304,16 +315,26 @@ public class UserListActivity extends BaseActivity {
      */
     private void showUsers() {
         if (mUsers.size() == 0) {
-            showSnackBar(getString(R.string.error_load_users_list));
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_load_users_list));
         } else {
-            mUsersAdapter = new UsersAdapter(mUsers, getApplicationContext(), new UsersAdapter.UserViewHolder.CustomClickListener() {
+            mUsersAdapter = new UsersAdapter(mUsers, getApplicationContext(), new CustomClickListener() {
                 @Override
-                public void onUserItemClickListener(int position) {
-                    UserDTO userDTO = new UserDTO(mUsers.get(position));
+                public void onUserItemClickListener(String action, int position) {
+                    if (action.equals(ConstantManager.START_PROFILE_ACTIVITY_KEY)) {
+                        UserDTO userDTO = new UserDTO(mUsers.get(position));
 
-                    Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
-                    profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
-                    startActivity(profileIntent);
+                        Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
+                        profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
+                        startActivity(profileIntent);
+                    } else if (action.equals(ConstantManager.LIKE_USER_KEY)) {
+                        if (mUsersAdapter.isUserLiked(mUsers.get(position))) {
+                            unLikeUser(position);
+                        } else {
+                            likeUser(position);
+                        }
+                    }
+//                    } else if (action.equals(ConstantManager.UNLIKE_USER_KEY)) {
+//                    }
                 }
             });
             mRecyclerView.swapAdapter(mUsersAdapter, false);
@@ -387,5 +408,85 @@ public class UserListActivity extends BaseActivity {
             }
         });
         itemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
+    /**
+     * Вызывает call запрос и обрабатывает callBack от него для установки или удаления лайка
+     * @param call вызов
+     * @param user пользователь
+     * @param position позиция в RecycleView
+     * @param isLikeUser true - установка лайка, false - удаление
+     */
+    private void callWithLikeModel(Call call, final User user, final int position, final boolean isLikeUser) {
+        call.enqueue(new Callback<LikeModelRes>() {
+            @Override
+            public void onResponse(Call<LikeModelRes> call, Response<LikeModelRes> response) {
+                if (response.code() == 200) {
+                    UserModelRes.ProfileValues userData = response.body().getData();
+                    user.setRait(userData.getRait());
+                    user.setCodeLines(userData.getLinesCode());
+                    user.setProjects(userData.getProjects());
+
+                    if (isLikeUser) {
+                        mDataManager.getDaoSession().getLikeDao().insert(
+                                new Like(mDataManager.getPreferencesManager().getUserId(), user.getRemoteId())
+                        );
+                    } else {
+                        List<Like> likes = mDataManager.getDaoSession().queryBuilder(Like.class).where(
+                                LikeDao.Properties.UserRemoteId.eq(user.getRemoteId()),
+                                LikeDao.Properties.LikeUserId.eq(mDataManager.getPreferencesManager().getUserId())
+                        ).list();
+                        for (Like like : likes) {
+                            like.delete();
+                        }
+                    }
+                    user.resetLikes();
+                    user.setRating(userData.getRating());
+                    mDataManager.getDaoSession().getUserDao().insertOrReplace(user);
+
+                    mUsersAdapter.notifyItemChanged(position);
+                } else {
+                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.not_known_response));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LikeModelRes> call, Throwable t) {
+                SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
+                EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
+            }
+        });
+    }
+
+    /**
+     * Ставит лайк пользователю
+     *
+     * @param position позиция пользователя, которому ставится лайк
+     */
+    private void likeUser(final int position) {
+        final User user = mUsers.get(position);
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+            Call<LikeModelRes> call = mDataManager.likeUser(user.getRemoteId());
+            callWithLikeModel(call, user, position, true);
+        } else {
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
+            EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));
+        }
+    }
+
+    /**
+     * Удаляет лайк у пользователя
+     *
+     * @param position позиция пользователя, у которого удаляется лайк
+     */
+    private void unLikeUser(final int position) {
+        final User user = mUsers.get(position);
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+            Call<LikeModelRes> call = mDataManager.unLikeUser(user.getRemoteId());
+            callWithLikeModel(call, user, position, false);
+        } else {
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
+            EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));
+        }
     }
 }

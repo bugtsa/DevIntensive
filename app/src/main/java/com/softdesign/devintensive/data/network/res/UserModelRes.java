@@ -202,12 +202,18 @@ public class UserModelRes {
         @SerializedName("linesCode")
         @Expose
         private int linesCode;
+        @SerializedName("likesBy")
+        @Expose
+        private List<String> likesBy = new ArrayList<String>();
         @SerializedName("rait")
         @Expose
         private int rait;
         @SerializedName("updated")
         @Expose
         private String updated;
+        @SerializedName("rating")
+        @Expose
+        private int rating;
 
         public int getProjects() {
             return projects;
@@ -217,9 +223,15 @@ public class UserModelRes {
             return linesCode;
         }
 
-        public int getRating() {
-            return rait;
+        public List<String> getLikesArray() {
+            return likesBy;
         }
+
+        public int getRating() {
+            return rating;
+        }
+
+        public int getRait() {return rait;}
 
         public int getHomeTask() {
             return homeTask;

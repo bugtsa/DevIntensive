@@ -43,7 +43,10 @@ import com.softdesign.devintensive.data.events.ErrorEvent;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.LogUtils;
+import com.softdesign.devintensive.utils.MediaStoreFileHelper;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
+import com.softdesign.devintensive.utils.SnackBarUtils;
 import com.softdesign.devintensive.utils.ValidatorUtils;
 import com.squareup.picasso.Picasso;
 
@@ -59,6 +62,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginUserActivity extends BaseActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = ConstantManager.TAG_PREFIX + LoginUserActivity.class.getSimpleName();
@@ -106,13 +116,15 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
 
     private Uri mSelectedImage = null;
 
+    private Uri mCurrentProfileImage;
+
     /**
      * Обрабатывает событие onCreate жизненного цикла Activity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login_user);
         ButterKnife.bind(this);
         LogUtils.d(TAG, "onCreate");
 
@@ -323,6 +335,7 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
+        mNavigationView.setCheckedItem(R.id.user_profile_menu);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -357,6 +370,8 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
      */
     private void changeEditMode(int mode) {
         if (mode == 1) {
+            mCurrentProfileImage = mDataManager.getPreferencesManager().loadUserPhoto();
+
             mFab.setImageResource(R.drawable.ic_done_black_24dp);
             for (EditText userValue : mUserFieldsViews) {
                 userValue.setEnabled(true);
@@ -378,6 +393,11 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
             unLockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.white));
             saveUserFields();
+
+            if (mSelectedImage != null && !mSelectedImage.equals(mCurrentProfileImage)) {
+                sendPhotoToServer();
+                mCurrentProfileImage = mSelectedImage;
+            }
         }
     }
 
@@ -394,6 +414,43 @@ public class LoginUserActivity extends BaseActivity implements View.OnClickListe
                 field.onKeyUp(KeyEvent.KEYCODE_DPAD_CENTER, new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_CENTER));
             }
         });
+    }
+
+
+
+    /**
+     * Отправляет фотографию профиля пользователя на сайт DevIntensive
+     */
+    private void sendPhotoToServer() {
+        String userId = mDataManager.getPreferencesManager().getUserId();
+
+        File file = MediaStoreFileHelper.getFileByUri(this, mSelectedImage);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+
+        if (NetworkStatusChecker.isNetworkAvailable(this)) {
+            Call<ResponseBody> call = mDataManager.uploadPhoto(userId, body);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 200) {
+                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.photo_save_on_site));
+                    } else {
+                        SnackBarUtils.show(mCoordinatorLayout, getString(R.string.photo_not_save_on_site));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_response) + t.getMessage());
+                    EventBus.getDefault().post(new ErrorEvent(ConstantManager.RESPONSE_NOT_OK));
+                }
+            });
+        } else {
+            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.network_not_access_response));
+            EventBus.getDefault().post(new ErrorEvent(ConstantManager.NETWORK_NOT_AVAILABLE));
+        }
+        return;
     }
 
     /**

@@ -2,6 +2,7 @@
 
     <string name="ff_regular">sans-serif</string>
     <string name="ff_medium">sans-serif-medium</string>
+    <string name="ff_condensed">sans-serif-condensed</string>
 
     <string name="app_name">DevIntensive</string>
     <string name="my_name">Полховцев Владимир</string>
@@ -40,15 +41,25 @@
     <string name="err_msg_git">Неверно! Формат: github.com/ххх</string>
 
     <string name="sing_in">Войти</string>
+    <string name="hint_search">Поиск пользователя</string>
+    <string name="search_input_name_user">Введите имя пользователя</string>
+    <string name="show_user_profile">Просмотр</string>
+
+    //Errors
     <string name="not_known_response">Неизвестный ответ</string>
     <string name="login_password_not_match_response">Неверный логин или пароль</string>
     <string name="error_response">"Ошибка: "</string>
     <string name="network_not_access_response">Сеть на данный момент недоступна, попробуйте позже</string>
-    <string name="hint_search">Поиск пользователя</string>
     <string name="error_load_users_list">Ошибка загрузки списка пользователей</string>
-    <string name="search_input_name_user">Введите имя пользователя</string>
     <string name="request_auth">Необходима авторизация</string>
     <string name="login_pass_not_match">Неверный логин или пароль</string>
     <string name="editable_error">Ошибка изменения строки</string>
     <string name="users_list_not_saved">Список пользователей не сохранён в ЬД</string>
+    <string name="photo_save_on_site">Фото сохранено на сайте</string>
+    <string name="photo_not_save_on_site">Фото сохранить на сайте не удалось</string>
+    <string name="set_like">Пользователь поставил Вам лайк</string>
+    <string name="zeros">0</string>
+    //End Errors
+
+
 </resources>
