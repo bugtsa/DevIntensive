@@ -1,8 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -283,6 +281,7 @@ public class UserListActivity extends BaseActivity {
 
     /**
      * Обрабатывает результат операции LoadUsersListOperation
+     *
      * @param result результат операции
      */
     public void onOperationFinished(final LoadUsersListOperation.Result result) {
@@ -292,6 +291,7 @@ public class UserListActivity extends BaseActivity {
 
     /**
      * Обрабатывает результат операции LoadUserByNameOperation
+     *
      * @param result результат операции
      */
     public void onOperationFinished(final LoadUserByNameOperation.Result result) {
@@ -323,6 +323,7 @@ public class UserListActivity extends BaseActivity {
 
     /**
      * Отображает список пользователей при поиске по имени
+     *
      * @param query строка поиска
      */
     private void showUserByQuery(final String query) {
@@ -347,11 +348,12 @@ public class UserListActivity extends BaseActivity {
 
     /**
      * Слушает событие TimeEvent
+     *
      * @param timeEvent слушает окончание отображение списка пользователей
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeEvent(TimeEvent timeEvent) {
-        switch(timeEvent.getTimeCode()) {
+        switch (timeEvent.getTimeCode()) {
 
             case ConstantManager.END_SHOW_USERS:
                 hideSplash();
